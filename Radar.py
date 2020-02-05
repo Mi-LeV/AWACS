@@ -31,8 +31,10 @@ class Plane:
         else:
             distanceToDest = utility.plafonne(distanceToDest,-2,False)
         
-        vector = utility.plafonne(vector + distanceToDest,3,True)
-        vector = utility.plafonne(vector + distanceToDest,-3,False)
+        if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),3,True)
+        else:
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-3,False)
         
         return vector
 
@@ -56,10 +58,6 @@ class Plane:
         yDistance = math.sin(-angle+math.pi)*norme
         return xDistance,yDistance
 
-    def vectorTo(self,vector):
-        norme,angle = vector
-
-
     
     def goTo(self,xDest,yDest):
         x,y,xosef,yosef=Canevas.coords(self.graphicPlane)
@@ -82,7 +80,7 @@ class Plane:
 
         Canevas.move(self.graphicPlane,self.xVector,self.yVector)
 
-        if not((5 > xDistanceToDest > -5) and (5 > yDistanceToDest > -5)):
+        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
             return False #continue
         else:# s'arrete
             self.xVector = 0
