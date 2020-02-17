@@ -1,6 +1,6 @@
 import pygame
+from time import sleep
 from pygame.locals import *#les variables de pygame
-import math
 
 refreshList = []
 
@@ -16,7 +16,7 @@ class utility:
         return nombre
     
 class Plane:
-    def __init__(self,x,y,color):
+    def __init__(self,x,y):
 
         print("Plane created")
         self.xVector=0
@@ -84,7 +84,7 @@ class Plane:
 
 class PlayerPlane(Plane):
     def __init__(self,x,y,color):
-        super().__init__(x,y,color)
+        super().__init__(x,y)
         #self.graphicPlane = Canevas.create_rectangle(x,y,x+10,y+10,outline=color,fill=color)
 
     def clic(self,event): 
@@ -96,16 +96,12 @@ class PlayerPlane(Plane):
         self.shoot(event.pos[0],event.pos[1])
 
 class IaPlane(Plane):
-    def __init__(self,x,y,friend,color = False):
-        super().__init__(x,y,color)
-        if not color:
-            if friend:
-                colorAff = 'blue'
-            else:
-                colorAff = 'red'
-        else:
-            colorAff = color
-        #self.graphicPlane = Canevas.create_oval(x-5,y-5,x+5,y+5,outline=colorAff,fill=colorAff)
+    def __init__(self,x,y,friend):
+        super().__init__(x,y)
+        if friend:pass
+            #mettre le sprite ami
+        else:pass
+            #mettre le sprite ennemi  
         self.friendly = friend
         
 
@@ -172,6 +168,8 @@ fenetre = pygame.display.set_mode((640,480))
 fond = pygame.image.load("hackeur thibault.jpg").convert()
 fenetre.blit(fond, (0,0))
 affFenetre = True
+pygame.mixer.music.load("background_music.mp3")
+pygame.mixer.music.play()
 
 
 
@@ -194,10 +192,11 @@ while affFenetre:
     
     for avion in refreshList:
         avion.goTick(avion.xDest,avion.yDest)
+    
+    sleep(0.1)#delai graphique
     #Re-collage
     fenetre.blit(fond,(0,0))
     for avion in refreshList:
         fenetre.blit(avion.sprite,(avion.x,avion.y))
-    #fenetre.blit(perso, (perso_x, perso_y))
     #Rafraichissement
     pygame.display.flip()
