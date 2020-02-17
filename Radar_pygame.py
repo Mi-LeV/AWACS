@@ -21,13 +21,13 @@ class Plane:
         print("Plane created")
         self.xVector=0
         self.yVector=0
-        self.xDest = 0
-        self.yDest = 0
+        self.xDest = x
+        self.yDest = y
         self.x = x
         self.y = y
-        self.sprite = None
+        self.sprite = pygame.image.load("sprite_plane.png").convert_alpha()
 
-    def scalaireTo(self,vector,distanceToDest):
+    def vectorTo(self,vector,distanceToDest):
 
         if distanceToDest > 0:
             distanceToDest = utility.plafonne(distanceToDest,2,True)
@@ -41,29 +41,29 @@ class Plane:
         
         return vector
     
-    def goTo(self,xDest,yDest):
-        pos= self.sprite.get_rect()
-        xDistanceToDest=xDest-pos[0]
-        yDistanceToDest=yDest-pos[1]
-            
-        self.xVector = self.scalaireTo(self.xVector,xDistanceToDest)
-        self.yVector = self.scalaireTo(self.yVector,yDistanceToDest)
+    def goTo(self,xDistanceToDest,yDistanceToDest):
 
-
+        self.xVector = self.vectorTo(self.xVector,xDistanceToDest)
+        self.yVector = self.vectorTo(self.yVector,yDistanceToDest)
+        
         self.x += self.xVector
         self.y += self.yVector
 
         xDistanceToDest -= self.xVector
         yDistanceToDest -= self.yVector
 
-        #Canevas.move(self.graphicPlane,self.xVector,self.yVector)
 
+    def goTick(self,xDest,yDest):
+        print("tick")
+        xDistanceToDest=self.xDest-self.x
+        yDistanceToDest=self.yDest-self.y
         if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
-            return False #continue
+            self.goTo(xDistanceToDest,yDistanceToDest)
         else:# s'arrete
             self.xVector = 0
             self.yVector = 0
             return True
+
 
     def shoot(self,x,y):
         if not(hasattr(self,"Mymissile")):
@@ -85,24 +85,12 @@ class Plane:
 class PlayerPlane(Plane):
     def __init__(self,x,y,color):
         super().__init__(x,y,color)
-        self.sprite = pygame.image.load("sprite_plane.png").convert_alpha()
+        #self.graphicPlane = Canevas.create_rectangle(x,y,x+10,y+10,outline=color,fill=color)
 
     def clic(self,event): 
-        if self.xVector == 0 and self.yVector == 0:
-            print("clic")
-            self.xDest = event.pos[0]
-            self.yDest = event.pos[1]
-            if not self.goTo(self.xDest,self.yDest):
-                self.clicLoop
-        else:
-            print("en mouvement")
-
-    def clicLoop(self):
-        print("cloc")
-        if not (self.goTo(self.xDest,self.yDest)):
-            fenetre.after(100,self.clicLoop)
-        else:
-            print("fin")
+        print("clic")
+        self.xDest = event.pos[0]
+        self.yDest = event.pos[1]
 
     def shootClic(self,event):
         self.shoot(event.pos[0],event.pos[1])
@@ -110,7 +98,14 @@ class PlayerPlane(Plane):
 class IaPlane(Plane):
     def __init__(self,x,y,friend,color = False):
         super().__init__(x,y,color)
-        self.sprite = pygame.image.load("sprite_plane.png").convert_alpha()
+        if not color:
+            if friend:
+                colorAff = 'blue'
+            else:
+                colorAff = 'red'
+        else:
+            colorAff = color
+        #self.graphicPlane = Canevas.create_oval(x-5,y-5,x+5,y+5,outline=colorAff,fill=colorAff)
         self.friendly = friend
         
 
@@ -135,7 +130,7 @@ class Missile:
     def __del__(self):
         #Canevas.delete(self.ovalMissile) ## supprime l'objet tkinter
         pass
-
+    
     def go(self,x,y):
         self.x = x
         self.y = y
@@ -149,17 +144,17 @@ class Missile:
         return vector
     
     def goTo(self,xDest,yDest):
-        pos=self.sprite.get_rect()
-        xDistanceToDest=xDest-pos[0]
-        yDistanceToDest=yDest-pos[1]
+        x,y=self.sprite.get_rect()
+        xDistanceToDest=xDest-x
+        yDistanceToDest=yDest-y
         if ((xDistanceToDest>5 or xDistanceToDest<-5)or(yDistanceToDest>5 or yDistanceToDest<-5)):
-            pos=self.sprite.get_rect()
+            x,y=self.sprite.get_rect()
 
             self.xVector = self.vectorTo(xDest,self.xVector,xDistanceToDest)
             self.yVector = self.vectorTo(yDest,self.yVector,yDistanceToDest)
 
-            xDistanceToDest=xDest-pos[0]
-            yDistanceToDest=yDest-pos[1]
+            xDistanceToDest=xDest-x
+            yDistanceToDest=yDest-y
 
             self.x += self.xVector
             self.y += self.yVector
@@ -187,9 +182,6 @@ refreshList.append(Player)
 Ennemy = IaPlane(250,270,False)
 refreshList.append(Ennemy)
 
-#Canevas.bind('<Control-Button-1>',Player.shootClic)##control clic gauche : graphicPlane lance un missile
-#Canevas.bind('<Control-Button-3>',Ennemy.trajectoirePatterne(150,230,350,370))
-
 while affFenetre:
     pygame.display.flip()
     for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
@@ -199,10 +191,13 @@ while affFenetre:
             Player.clic(event)
         if event.type == MOUSEBUTTONDOWN and event.button == 2:##clic molette : graphicPlane lance un missile
             Player.shootClic(event)
+    
+    for avion in refreshList:
+        avion.goTick(avion.xDest,avion.yDest)
     #Re-collage
     fenetre.blit(fond,(0,0))
-    for objet in refreshList:
-        fenetre.blit(objet.sprite,(objet.x,objet.y))
+    for avion in refreshList:
+        fenetre.blit(avion.sprite,(avion.x,avion.y))
     #fenetre.blit(perso, (perso_x, perso_y))
     #Rafraichissement
     pygame.display.flip()
