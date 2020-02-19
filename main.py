@@ -1,8 +1,8 @@
 import pygame
 from time import sleep
-from pygame.locals import *#les var de pygame
-import classes #importation des classes
+from pygame.locals import * #les var de pygame
 import variables as var #importion des variables globales
+import classes #importation des classes
 
 ##creation de la fenetre
 
@@ -36,15 +36,16 @@ while affFenetre:
             Player.shootClic(event)
     
     for objet in var.refreshList:#boucle de mouvement
-        #avion.sprite = pygame.transform.rotate(avion.sprite, utility.getBearing((avion.x,avion.y),(avion.xDest,avion.yDest)))
+        angle = classes.utility.getBearing((objet.x,objet.y),(objet.xDest,objet.yDest))
+        classes.utility.rotate(objet,angle)
         objet.goTick(objet.xDest,objet.yDest)
     
     sleep(0.1)#delai graphique
 
     #Re-collage
     fenetre.blit(fond,(0,0))
-    for avion in var.refreshList:
-        fenetre.blit(avion.sprite,(avion.x,avion.y))
+    for objet in var.refreshList:
+        fenetre.blit(objet.sprite,(objet.x,objet.y))
     #Rafraichissement
     pygame.display.flip()
 

@@ -18,7 +18,16 @@ class utility:
         theta = math.atan2(pointB[0] - pointA[0], pointA[1] - pointB[1])
         if (theta < 0):
             theta += 2*math.pi
-        return math.degrees(theta)
+        return 360-math.degrees(theta)
+    
+    @staticmethod
+    def rotate(objet,angle):
+        """Rotate the image of the sprite around its center."""
+        # `rotozoom` usually looks nicer than `rotate`. Pygame's rotation
+        # functions return new images and don't modify the originals.
+        objet.sprite = pygame.transform.rotozoom(objet.orig_sprite, objet.angle + angle, 1)
+        # Create a new rect with the center of the old rect.
+        objet.rect = objet.sprite.get_rect(center=objet.rect.center)
 
 class Plane:
     def __init__(self,x,y):
@@ -29,7 +38,10 @@ class Plane:
         self.yDest = y
         self.x = x
         self.y = y
+        self.orig_sprite = pygame.image.load("sprite_plane.png").convert_alpha()
         self.sprite = pygame.image.load("sprite_plane.png").convert_alpha()
+        self.rect = self.sprite.get_rect(center=(x,y))
+        self.angle = 90
         var.refreshList.append(self)
 
 
