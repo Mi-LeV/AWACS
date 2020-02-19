@@ -72,7 +72,6 @@ class Plane:
 
 
     def goTick(self,xDest,yDest):
-        print("gotick")
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
         if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
@@ -85,7 +84,7 @@ class Plane:
 
     def shoot(self,x,y):
         print("player shoot")
-        self.Mymissile = Missile(self.x,self.y)
+        self.Mymissile = Missile(self.x,self.y,self.angle)
         self.Mymissile.xDest = x
         self.Mymissile.yDest = y
 
@@ -119,33 +118,37 @@ class IaPlane(Plane):
             self.trajectoirePatterne(x1,y1,x2,y2,nombre-1)
 
 class Missile:
-    def __init__(self,x,y):
+    def __init__(self,x,y,angle):
 
         print("Missile created")
-        self.sprite = pygame.image.load("sprite_missile.png").convert_alpha()
-        self.sprite
-        self.xVector=0
-        self.yVector=0
+        self.xVector=0.5
+        self.yVector=0.5
         self.xDest = x
         self.yDest = y
         self.x = x
         self.y = y
+        self.speed = 0
+        self.timeAlive = 0
+        self.orig_sprite = pygame.image.load("sprite_missile.png").convert_alpha()
+        self.sprite = pygame.image.load("sprite_missile.png").convert_alpha()
+        self.rect = self.sprite.get_rect(center=(x,y))
+        self.angle = angle-45#l'angle natif de l'image
         var.refreshList.append(self)
     
 
     def vectorTo(self,vector,distanceToDest):
 
         if distanceToDest > 0:
-            distanceToDest = utility.plafonne(distanceToDest,2,True)
+            distanceToDest = utility.plafonne(distanceToDest,5,True)
         else:
-            distanceToDest = utility.plafonne(distanceToDest,-2,False)
+            distanceToDest = utility.plafonne(distanceToDest,-5,False)
         
         if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),3,True)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),5,True)
         else:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-3,False)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),-5,False)
         
-        return vector
+        return vector/((self.timeAlive+1)/5)
     
     def goTo(self,xDistanceToDest,yDistanceToDest):
 
@@ -159,13 +162,14 @@ class Missile:
         yDistanceToDest -= self.yVector
     
     def goTick(self,xDest,yDest):
-        print("gotick")
+        self.timeAlive += 1
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
-        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
+        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)) and not(-0.5<self.xVector < 0.5 and -0.5<self.yVector < 0.5):
             self.goTo(xDistanceToDest,yDistanceToDest)
         else:# s'arrete
             self.xVector = 0
             self.yVector = 0
-            #self.sprite = pygame.image.fromstring("")
+            self.sprite.fill((0,0,0,0))
+            var.refreshList.remove(self)
             del self

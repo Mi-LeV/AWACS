@@ -45,7 +45,7 @@ while affFenetre:
     #Re-collage
     fenetre.blit(fond,(0,0))
     for objet in var.refreshList:
-        fenetre.blit(objet.sprite,(objet.x,objet.y))
+        fenetre.blit(objet.sprite,(objet.x-10,objet.y-10))
     #Rafraichissement
     pygame.display.flip()
 
