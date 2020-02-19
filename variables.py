@@ -1,4 +1,6 @@
 
 refreshList = []
+hittedList = []
+playerList = []
 img_icon = "sprite_plane.png"
-img_fond = "hackeur thibault.jpg"
+img_fond = "fond.png"

@@ -28,6 +28,11 @@ class utility:
         objet.sprite = pygame.transform.rotozoom(objet.orig_sprite, objet.angle + angle, 1)
         # Create a new rect with the center of the old rect.
         objet.rect = objet.sprite.get_rect(center=objet.rect.center)
+    @staticmethod
+    def respawn():
+        if not var.playerList:
+            global Player
+            Player = PlayerPlane(250,230,'blue')
 
 class Plane:
     def __init__(self,x,y):
@@ -44,6 +49,8 @@ class Plane:
         self.angle = 90
         var.refreshList.append(self)
 
+    def __del__(self):
+        self.sprite.fill((0,0,0,0))
 
     def vectorTo(self,vector,distanceToDest):
 
@@ -91,7 +98,9 @@ class Plane:
 class PlayerPlane(Plane):
     def __init__(self,x,y,color):
         super().__init__(x,y)
-        #self.graphicPlane = Canevas.create_rectangle(x,y,x+10,y+10,outline=color,fill=color)
+        var.playerList.append(self)
+    def __del__(self):
+        var.playerList.remove(self)
 
     def clic(self,event): 
         print("clic")
@@ -135,7 +144,9 @@ class Missile:
         self.angle = angle-45#l'angle natif de l'image
         var.refreshList.append(self)
     
-
+    def __del__(self):
+        self.sprite.fill((0,0,0,0))
+    
     def vectorTo(self,vector,distanceToDest):
 
         if distanceToDest > 0:
@@ -172,4 +183,5 @@ class Missile:
             self.yVector = 0
             self.sprite.fill((0,0,0,0))
             var.refreshList.remove(self)
+            #var.hittedList.remove(self)
             del self

@@ -17,6 +17,7 @@ while serveur_lance:
 
     for connexion in connexion_demandees:
         connexion_avec_client, infos_connexion = connexion_principale.accept()
+        print(connexion_avec_client,infos_connexion)
         clients_connectes.append(connexion_avec_client)
     
     clients_a_lire = []
@@ -31,9 +32,7 @@ while serveur_lance:
             client.send(b"recu")
             if msg_recu == "disconnect":
                 serveur_lance = False
-            position(x, y)
-            position = msg_recu
-            msg_a_envoyer = position
+            msg_a_envoyer = msg_recu
             msg_a_envoyer = msg_a_envoyer.encode()
             client.send(msg_a_envoyer)
 
