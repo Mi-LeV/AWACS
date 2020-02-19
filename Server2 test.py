@@ -22,8 +22,8 @@ while serveur_lance:
     clients_a_lire = []
     try:
         clients_a_lire, wlist, xlist = select.select(clients_connectes, [], 0.05)
-    except select.error
-        pass
+    except:
+        select.error
     else:
         for client in clients_a_lire:
             msg_recu = client.recv(1024)
