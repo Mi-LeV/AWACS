@@ -143,7 +143,7 @@ class Missile:
         self.orig_sprite = pygame.image.load("sprite_missile.png").convert_alpha()
         self.sprite = pygame.image.load("sprite_missile.png").convert_alpha()
         self.rect = self.sprite.get_rect(center=(x,y))
-        self.angle = angle-45#l'angle natif de l'image
+        self.angle = angle#l'angle natif de l'image
         var.refreshList.append(self)
     
     def __del__(self):
