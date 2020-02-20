@@ -52,8 +52,9 @@ while affFenetre:
     for objet in var.refreshList:
         for objet2 in var.refreshList:#boucle de test hitbox
             if objet.rect.colliderect(objet2.rect) and objet != objet2:
-                print("col")
-                var.hittedList.append(objet) 
+                if not(type(objet)==classes.Missile and objet.timeAlive < 6) and not(type(objet2)==classes.Missile and objet2.timeAlive < 6):
+                    print("col")
+                    var.hittedList.append(objet) 
     
     for objet in var.hittedList[::-1]:#boucle delete
         var.refreshList.remove(objet)

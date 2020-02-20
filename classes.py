@@ -47,7 +47,9 @@ class Plane:
         self.sprite = pygame.image.load("sprite_plane.png").convert_alpha()
         self.rect = self.sprite.get_rect(center=(x,y))
         self.angle = 90
+        self.missileList = []
         var.refreshList.append(self)
+
 
     def __del__(self):
         self.sprite.fill((0,0,0,0))
@@ -91,16 +93,15 @@ class Plane:
 
     def shoot(self,x,y):
         print("player shoot")
-        self.Mymissile = Missile(self.x,self.y,self.angle)
-        self.Mymissile.xDest = x
-        self.Mymissile.yDest = y
+        self.missileList.append(Missile(self,self.x,self.y,x,y,self.angle))
 
 class PlayerPlane(Plane):
     def __init__(self,x,y,color):
         super().__init__(x,y)
         var.playerList.append(self)
     def __del__(self):
-        var.playerList.remove(self)
+        try:var.playerList.remove(self)
+        except:pass
 
     def clic(self,event): 
         print("clic")
@@ -127,13 +128,14 @@ class IaPlane(Plane):
             self.trajectoirePatterne(x1,y1,x2,y2,nombre-1)
 
 class Missile:
-    def __init__(self,x,y,angle):
+    def __init__(self,creator,x,y,xDest,yDest,angle):
 
         print("Missile created")
+        self.creator = creator
         self.xVector=0.5
         self.yVector=0.5
-        self.xDest = x
-        self.yDest = y
+        self.xDest = xDest
+        self.yDest = yDest
         self.x = x
         self.y = y
         self.speed = 0
@@ -150,16 +152,16 @@ class Missile:
     def vectorTo(self,vector,distanceToDest):
 
         if distanceToDest > 0:
-            distanceToDest = utility.plafonne(distanceToDest,5,True)
+            distanceToDest = utility.plafonne(distanceToDest,4,True)
         else:
-            distanceToDest = utility.plafonne(distanceToDest,-5,False)
+            distanceToDest = utility.plafonne(distanceToDest,-4,False)
         
         if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),5,True)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),4,True)
         else:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),-5,False)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),-4,False)
         
-        return vector/((self.timeAlive+1)/5)
+        return vector/((self.timeAlive+1)/11)
     
     def goTo(self,xDistanceToDest,yDistanceToDest):
 
@@ -183,5 +185,8 @@ class Missile:
             self.yVector = 0
             self.sprite.fill((0,0,0,0))
             var.refreshList.remove(self)
-            #var.hittedList.remove(self)
+            try:var.hittedList.remove(self)
+            except:pass
+            self.creator.missileList.remove(self)
             del self
+        
