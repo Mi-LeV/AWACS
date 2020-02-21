@@ -141,7 +141,8 @@ class Missile:
         self.speed = 0
         self.timeAlive = 0
         self.orig_sprite = pygame.image.load("sprite_missile.png").convert_alpha()
-        self.sprite = pygame.image.load("sprite_missile.png").convert_alpha()
+        #self.orig_sprite = pygame.transform.scale(self.orig_sprite,(22,6))
+        self.sprite = self.orig_sprite
         self.rect = self.sprite.get_rect(center=(x,y))
         self.angle = angle#l'angle natif de l'image
         var.refreshList.append(self)
@@ -157,9 +158,9 @@ class Missile:
             distanceToDest = utility.plafonne(distanceToDest,-4,False)
         
         if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),4,True)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),4,True)
         else:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.2)),-4,False)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-4,False)
         
         return vector/((self.timeAlive+1)/11)
     
