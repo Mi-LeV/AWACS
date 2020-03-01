@@ -18,14 +18,16 @@ class utility:
         theta = math.atan2(pointB[0] - pointA[0], pointA[1] - pointB[1])
         if (theta < 0):
             theta += 2*math.pi
-        return 360-math.degrees(theta)
+        angle = 360-math.degrees(theta)
+        angle %= 360
+        return angle
     
     @staticmethod
     def rotate(objet,angle):
         """Rotate the image of the sprite around its center."""
         # `rotozoom` usually looks nicer than `rotate`. Pygame's rotation
         # functions return new images and don't modify the originals.
-        objet.sprite = pygame.transform.rotozoom(objet.orig_sprite, objet.angle + angle, 1)
+        objet.sprite = pygame.transform.rotozoom(objet.orig_sprite, angle, 1)
         # Create a new rect with the center of the old rect.
         objet.rect = objet.sprite.get_rect(center=objet.rect.center)
     @staticmethod
@@ -92,6 +94,7 @@ class Plane:
 
 
     def shoot(self,x,y):
+    #    if not utility.getBearing((self.x,self.y),(x,y))+self.angle > 90 and not utility.getBearing((self.x,self.y),(x,y))+self.angle < -90:
         print("player shoot")
         self.missileList.append(Missile(self,self.x,self.y,x,y,self.angle))
 
@@ -123,8 +126,8 @@ class IaPlane(Plane):
 
     def trajectoirePatterne(self,x1,y1,x2,y2,nombre = 10):
         if nombre > 1:
-            self.goTo(x1,x2)
-            self.goTo(x2,y2)
+            self.goTick(x1,x2)
+            self.goTick(x2,y2)
             self.trajectoirePatterne(x1,y1,x2,y2,nombre-1)
 
 class Missile:
@@ -132,8 +135,8 @@ class Missile:
 
         print("Missile created")
         self.creator = creator
-        self.xVector=0.5
-        self.yVector=0.5
+        self.xVector=0
+        self.yVector=0
         self.xDest = xDest
         self.yDest = yDest
         self.x = x
@@ -153,14 +156,14 @@ class Missile:
     def vectorTo(self,vector,distanceToDest):
 
         if distanceToDest > 0:
-            distanceToDest = utility.plafonne(distanceToDest,4,True)
+            distanceToDest = utility.plafonne(distanceToDest,9,True)
         else:
-            distanceToDest = utility.plafonne(distanceToDest,-4,False)
+            distanceToDest = utility.plafonne(distanceToDest,-9,False)
         
-        if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),4,True)
+        if vector + distanceToDest > 0:
+            vector = utility.plafonne(vector + distanceToDest,5,True)
         else:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-4,False)
+            vector = utility.plafonne(vector + distanceToDest,-5,False)
         
         return vector/((self.timeAlive+1)/11)
     
@@ -179,7 +182,8 @@ class Missile:
         self.timeAlive += 1
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
-        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)) and not(-0.5<self.xVector < 0.5 and -0.5<self.yVector < 0.5):
+        #si loin de la dest, et vecteurs pas trop faibles, et timeAlive pas trop grand, bouger sinon s'arrete
+        if not(((4 > xDistanceToDest > -4) and (4 > yDistanceToDest > -4)) and ((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 25)):
             self.goTo(xDistanceToDest,yDistanceToDest)
         else:# s'arrete
             self.xVector = 0

@@ -39,12 +39,11 @@ while affFenetre:
             classes.utility.respawn()
     
     for objet in var.refreshList:#boucle de mouvement
-        angle = classes.utility.getBearing((objet.x,objet.y),(objet.xDest,objet.yDest))
-        classes.utility.rotate(objet,angle)
+        objet.angle = (classes.utility.getBearing((objet.x,objet.y),(objet.xDest,objet.yDest))+90)%360
+        classes.utility.rotate(objet,objet.angle)
         objet.goTick(objet.xDest,objet.yDest)
     
-    var.spriteList = []
-    var.hittedList = []
+    var.hitList = []
 
     for objet in var.refreshList:
         objet.rect = objet.sprite.get_rect(center = (objet.x,objet.y))
@@ -52,17 +51,18 @@ while affFenetre:
     for objet in var.refreshList:
         for objet2 in var.refreshList:#boucle de test hitbox
             if objet.rect.colliderect(objet2.rect) and objet != objet2:
-                if not(type(objet)==classes.Missile and objet.timeAlive < 6) and not(type(objet2)==classes.Missile and objet2.timeAlive < 6):
+                if not(type(objet)==classes.Missile and objet.timeAlive < 3) and not(type(objet2)==classes.Missile and objet2.timeAlive < 3):
                     print("col")
-                    var.hittedList.append(objet) 
+                    var.hitList.append(objet) 
     
-    for objet in var.hittedList[::-1]:#boucle delete
+    for objet in var.hitList[::-1]:#boucle delete
         var.refreshList.remove(objet)
-        var.hittedList.remove(objet)
+        var.hitList.remove(objet)
         try:var.playerList.remove(objet)
         except:pass
         del objet
-            
+    
+    print(var.playerList[0].angle)
     sleep(0.1)#delai graphique
     #Re-collage
     fenetre.blit(fond,(0,0))
