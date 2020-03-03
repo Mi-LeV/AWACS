@@ -34,7 +34,23 @@ class utility:
     def respawn():
         if not var.playerList:
             global Player
-            Player = PlayerPlane(250,230,'blue')
+            Player = PlayerPlane(250,230,'blue',True)
+    
+    @staticmethod
+    def getDistance(objet,objet2):
+        diffX = objet2.x - objet.x
+        diffY = objet2.y - objet.y
+        distance = math.sqrt(diffX**2+diffY**2)
+        return distance
+    
+    @staticmethod
+    def kill(objet):
+        var.refreshList.remove(objet)
+        try:var.hitList.remove(objet)
+        except:pass
+        try:var.playerList.remove(objet)
+        except:pass
+        del objet
 
 class Plane:
     def __init__(self,x,y):
@@ -82,7 +98,7 @@ class Plane:
         yDistanceToDest -= self.yVector
 
 
-    def goTick(self,xDest,yDest):
+    def goTick(self):
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
         if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
@@ -96,12 +112,22 @@ class Plane:
     def shoot(self,x,y):
     #    if not utility.getBearing((self.x,self.y),(x,y))+self.angle > 90 and not utility.getBearing((self.x,self.y),(x,y))+self.angle < -90:
         print("player shoot")
-        self.missileList.append(Missile(self,self.x,self.y,x,y,self.angle))
+        self.missileList.append(Missile(self,self.x,self.y,x,y,self.angle,self.xVector,self.yVector))
+    
+    def turn(self):
+        self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
+        utility.rotate(self,self.angle)# on le tourne de cet angle
 
 class PlayerPlane(Plane):
-    def __init__(self,x,y,color):
+    def __init__(self,x,y,color,friend):
         super().__init__(x,y)
         var.playerList.append(self)
+        if friend:pass
+            #mettre le sprite ami
+        else:pass
+            #mettre le sprite ennemi  
+        self.friendly = friend
+    
     def __del__(self):
         try:var.playerList.remove(self)
         except:pass
@@ -115,28 +141,51 @@ class PlayerPlane(Plane):
         self.shoot(event.pos[0],event.pos[1])
 
 class IaPlane(Plane):
-    def __init__(self,x,y,friend):
+    def __init__(self,x,y,friend,active):
         super().__init__(x,y)
+        self.agro = None
+        self.active = active
         if friend:pass
             #mettre le sprite ami
         else:pass
             #mettre le sprite ennemi  
         self.friendly = friend
-        
+    
+    def goTick(self):
+        if self.active:
+            super().goTick()
+            self.searchAgro()
+            self.goAgro()
 
-    def trajectoirePatterne(self,x1,y1,x2,y2,nombre = 10):
-        if nombre > 1:
-            self.goTick(x1,x2)
-            self.goTick(x2,y2)
-            self.trajectoirePatterne(x1,y1,x2,y2,nombre-1)
+    def goAgro(self):
+        self.xDest = self.agro.x
+        self.yDest = self.agro.y
+        
+    def searchAgro(self):
+        ennemyList = []
+        for objet in var.refreshList:
+            if type(objet)!= Missile and objet.friendly != self.friendly:#test si objet non missile et si il est pas de son camp
+                ennemyList.append(objet)
+
+        if ennemyList:#si la liste n'est pas vide
+            minima = 99999999 #valeur très haute
+            minObj = None
+            for objet in ennemyList:#test de la distance minimlale
+                temp = utility.getDistance(self,objet)#calcul distance
+                if temp < minima:
+                    minima = temp
+                    minObj = objet
+            self.agro = minObj
+        else:
+            self.agro = None
 
 class Missile:
-    def __init__(self,creator,x,y,xDest,yDest,angle):
+    def __init__(self,creator,x,y,xDest,yDest,angle,xVector,yVector):
 
         print("Missile created")
         self.creator = creator
-        self.xVector=0
-        self.yVector=0
+        self.xVector=xVector
+        self.yVector=yVector
         self.xDest = xDest
         self.yDest = yDest
         self.x = x
@@ -178,7 +227,7 @@ class Missile:
         xDistanceToDest -= self.xVector
         yDistanceToDest -= self.yVector
     
-    def goTick(self,xDest,yDest):
+    def goTick(self):
         self.timeAlive += 1
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
@@ -195,3 +244,6 @@ class Missile:
             self.creator.missileList.remove(self)
             del self
         
+    def turn(self):
+        self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
+        utility.rotate(self,self.angle)# on le tourne de cet angle

@@ -19,8 +19,8 @@ pygame.mixer.music.load("background_music.mp3")#musique de fond
 
 ##debut des evenements
 global Player
-Player = classes.PlayerPlane(250,230,'blue')
-Ennemy = classes.IaPlane(250,270,False)
+Player = classes.PlayerPlane(150,200,'blue',True)
+Ennemy = classes.IaPlane(250,270,False,True)
 
 
 while affFenetre:
@@ -37,11 +37,12 @@ while affFenetre:
             except:pass
         if event.type == KEYDOWN and event.key == K_SPACE:#on crée un nouv player et on le met dans playerlist
             classes.utility.respawn()
+        if event.type == KEYDOWN and event.key == K_k:#on crée un nouv player et on le met dans playerlist
+            classes.utility.kill(var.playerList[0])
     
     for objet in var.refreshList:#boucle de mouvement
-        objet.angle = (classes.utility.getBearing((objet.x,objet.y),(objet.xDest,objet.yDest))+90)%360#calcul de l'angle de l'ojet par rapport à sa dest
-        classes.utility.rotate(objet,objet.angle)# on le tourne de cet angle
-        objet.goTick(objet.xDest,objet.yDest)#on on lance la fonction tick de l'objet
+        objet.turn()# on lance la fonction turn de l'objet
+        objet.goTick()#on lance la fonction tick de l'objet
     
     var.hitList = []
 
@@ -62,8 +63,7 @@ while affFenetre:
         except:pass
         del objet
     
-    print(var.playerList[0].angle)
-    sleep(0.1)#delai graphique
+    sleep(0.2)#delai graphique
     #Re-collage
     fenetre.blit(fond,(0,0))
     for objet in var.refreshList:
