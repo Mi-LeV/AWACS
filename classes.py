@@ -45,12 +45,13 @@ class utility:
     
     @staticmethod
     def kill(objet):
-        var.refreshList.remove(objet)
-        try:var.hitList.remove(objet)
-        except:pass
-        try:var.playerList.remove(objet)
-        except:pass
-        del objet
+        if objet in var.refreshList:
+            var.refreshList.remove(objet)
+            try:var.hitList.remove(objet)
+            except:pass
+            try:var.playerList.remove(objet)
+            except:pass
+            del objet
 
 class Plane:
     def __init__(self,x,y):
