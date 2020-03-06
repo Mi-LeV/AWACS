@@ -23,6 +23,14 @@ class utility:
         return angle
     
     @staticmethod
+
+    def getCoords(angleDegree):
+        angle = math.radians(angleDegree)
+        x = math.cos(angle)
+        y = math.sin(angle)
+        return x,y
+    
+    @staticmethod
     def rotate(objet,angle):
         """Rotate the image of the sprite around its center."""
         # `rotozoom` usually looks nicer than `rotate`. Pygame's rotation
@@ -31,7 +39,7 @@ class utility:
         # Create a new rect with the center of the old rect.
         objet.rect = objet.sprite.get_rect(center=objet.rect.center)
     @staticmethod
-    def respawn():
+    def respawn():#fonction de test, recrée un player
         if not var.playerList:
             global Player
             Player = PlayerPlane(250,230,'blue',True)
@@ -45,12 +53,13 @@ class utility:
     
     @staticmethod
     def kill(objet):
-        var.refreshList.remove(objet)
-        try:var.hitList.remove(objet)
-        except:pass
-        try:var.playerList.remove(objet)
-        except:pass
-        del objet
+        if objet in var.refreshList:
+            var.refreshList.remove(objet)
+            try:var.hitList.remove(objet)
+            except:pass
+            try:var.playerList.remove(objet)
+            except:pass
+            del objet
 
 class Plane:
     def __init__(self,x,y):
@@ -99,6 +108,8 @@ class Plane:
 
 
     def goTick(self):
+        if not self.xDest or not self.yDest:# si la dest n'est pas définie, rien faire
+            return
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
         if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
@@ -109,10 +120,9 @@ class Plane:
             return True
 
 
-    def shoot(self,x,y):
-    #    if not utility.getBearing((self.x,self.y),(x,y))+self.angle > 90 and not utility.getBearing((self.x,self.y),(x,y))+self.angle < -90:
+    def shoot(self):
         print("player shoot")
-        self.missileList.append(Missile(self,self.x,self.y,x,y,self.angle,self.xVector,self.yVector))
+        self.missileList.append(Missile(self,self.x,self.y,self.angle,self.xVector,self.yVector))
     
     def turn(self):
         self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
@@ -137,9 +147,6 @@ class PlayerPlane(Plane):
         self.xDest = event.pos[0]
         self.yDest = event.pos[1]
 
-    def shootClic(self,event):
-        self.shoot(event.pos[0],event.pos[1])
-
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active):
         super().__init__(x,y)
@@ -158,6 +165,8 @@ class IaPlane(Plane):
             self.goAgro()
 
     def goAgro(self):
+        if not self.agro:# si la dest n'est pas définie, rien faire
+            return
         self.xDest = self.agro.x
         self.yDest = self.agro.y
         
@@ -180,60 +189,39 @@ class IaPlane(Plane):
             self.agro = None
 
 class Missile:
-    def __init__(self,creator,x,y,xDest,yDest,angle,xVector,yVector):
+    def __init__(self,creator,x,y,angle,xVector,yVector):
 
         print("Missile created")
         self.creator = creator
-        self.xVector=xVector
-        self.yVector=yVector
-        self.xDest = xDest
-        self.yDest = yDest
+        xAngle,yAngle = utility.getCoords(angle)
+        self.xVector=xVector + xAngle*2
+        self.yVector=yVector + yAngle*2
         self.x = x
         self.y = y
         self.speed = 0
         self.timeAlive = 0
         self.orig_sprite = pygame.image.load("sprite_missile.png").convert_alpha()
-        #self.orig_sprite = pygame.transform.scale(self.orig_sprite,(22,6))
         self.sprite = self.orig_sprite
         self.rect = self.sprite.get_rect(center=(x,y))
         self.angle = angle#l'angle natif de l'image
         var.refreshList.append(self)
     
-    def __del__(self):
-        self.sprite.fill((0,0,0,0))
-    
-    def vectorTo(self,vector,distanceToDest):
-
-        if distanceToDest > 0:
-            distanceToDest = utility.plafonne(distanceToDest,9,True)
-        else:
-            distanceToDest = utility.plafonne(distanceToDest,-9,False)
-        
-        if vector + distanceToDest > 0:
-            vector = utility.plafonne(vector + distanceToDest,5,True)
-        else:
-            vector = utility.plafonne(vector + distanceToDest,-5,False)
-        
+    def vectorTo(self,vector):#décélération proressive du missile
         return vector/((self.timeAlive+1)/11)
     
-    def goTo(self,xDistanceToDest,yDistanceToDest):
+    def goTo(self):
 
-        self.xVector = self.vectorTo(self.xVector,xDistanceToDest)
-        self.yVector = self.vectorTo(self.yVector,yDistanceToDest)
+        self.xVector = self.vectorTo(self.xVector)
+        self.yVector = self.vectorTo(self.yVector)
         
         self.x += self.xVector
         self.y += self.yVector
-
-        xDistanceToDest -= self.xVector
-        yDistanceToDest -= self.yVector
     
     def goTick(self):
         self.timeAlive += 1
-        xDistanceToDest=self.xDest-self.x
-        yDistanceToDest=self.yDest-self.y
         #si loin de la dest, et vecteurs pas trop faibles, et timeAlive pas trop grand, bouger sinon s'arrete
-        if not(((4 > xDistanceToDest > -4) and (4 > yDistanceToDest > -4)) and ((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 25)):
-            self.goTo(xDistanceToDest,yDistanceToDest)
+        if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 25)):
+            self.goTo()
         else:# s'arrete
             self.xVector = 0
             self.yVector = 0
@@ -243,7 +231,6 @@ class Missile:
             except:pass
             self.creator.missileList.remove(self)
             del self
-        
+    
     def turn(self):
-        self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
-        utility.rotate(self,self.angle)# on le tourne de cet angle
+        utility.rotate(self,self.angle)

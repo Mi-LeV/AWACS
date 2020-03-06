@@ -18,10 +18,8 @@ pygame.mixer.music.load("background_music.mp3")#musique de fond
 #pygame.mixer.music.play()
 
 ##debut des evenements
-global Player
 Player = classes.PlayerPlane(150,200,'blue',True)
-Ennemy = classes.IaPlane(250,270,False,True)
-
+Ennemy = classes.IaPlane(250,270,False,False)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -32,13 +30,16 @@ while affFenetre:
         if event.type == MOUSEBUTTONDOWN and event.button == 1:# # clic gauche
             try:var.playerList[0].clic(event)#le 1er player de playerlist enregistre nouv destination si la liste est pas vide
             except:pass
-        if event.type == MOUSEBUTTONDOWN and event.button == 2:##clic molette
-            try:var.playerList[0].shootClic(event)#le 1er player de playerlist tire si la liste est pas vide
-            except:pass
+        if event.type == MOUSEBUTTONDOWN and event.button == 3:##clic droit
+            print(var.playerList)
+            var.playerList[0].shoot()#le 1er player de playerlist tire si la liste est pas vide
+            #except:pass
+            
         if event.type == KEYDOWN and event.key == K_SPACE:#on crée un nouv player et on le met dans playerlist
             classes.utility.respawn()
         if event.type == KEYDOWN and event.key == K_k:#on crée un nouv player et on le met dans playerlist
-            classes.utility.kill(var.playerList[0])
+            try:classes.utility.kill(var.playerList[0])
+            except:pass
     
     for objet in var.refreshList:#boucle de mouvement
         objet.turn()# on lance la fonction turn de l'objet
@@ -63,7 +64,7 @@ while affFenetre:
         except:pass
         del objet
     
-    sleep(0.2)#delai graphique
+    sleep(0.1)#delai graphique
     #Re-collage
     fenetre.blit(fond,(0,0))
     for objet in var.refreshList:
