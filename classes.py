@@ -233,4 +233,9 @@ class Missile:
             del self
     
     def turn(self):
+<<<<<<< HEAD
         utility.rotate(self,self.angle)
+=======
+        self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
+        utility.rotate(self,self.angle)# on le tourne de cet angle
+>>>>>>> 6af1da43fc5ac1a416aec6558b17970241e6aea8
