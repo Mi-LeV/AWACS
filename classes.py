@@ -50,20 +50,21 @@ class utility:
         diffY = objet2.y - objet.y
         distance = math.sqrt(diffX**2+diffY**2)
         return distance
-    
+        
     @staticmethod
-    def kill(objet):
+    def delete(objet):
+        if objet in var.hitList:
+            var.hitList.remove(objet)
         if objet in var.refreshList:
             var.refreshList.remove(objet)
-            try:var.hitList.remove(objet)
-            except:pass
-            try:var.playerList.remove(objet)
-            except:pass
-            del objet
+        if objet in var.playerList:
+            var.playerList.remove(objet)
+        del objet
 
 class Plane:
     def __init__(self,x,y):
         print("Plane created")
+        self.MAXSPEED = 3
         self.xVector=0
         self.yVector=0
         self.xDest = x
@@ -89,9 +90,9 @@ class Plane:
             distanceToDest = utility.plafonne(distanceToDest,-2,False)
         
         if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),3,True)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),self.MAXSPEED,True)
         else:
-            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-3,False)
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-self.MAXSPEED,False)
         
         return vector
     
@@ -150,6 +151,7 @@ class PlayerPlane(Plane):
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active):
         super().__init__(x,y)
+        self.MAXSPEED = 1
         self.agro = None
         self.active = active
         if friend:pass
@@ -194,8 +196,10 @@ class Missile:
         print("Missile created")
         self.creator = creator
         xAngle,yAngle = utility.getCoords(angle)
-        self.xVector=xVector + xAngle*2
-        self.yVector=yVector + yAngle*2
+        self.xVector=utility.plafonne(xVector*2 + xAngle*20,20,True)
+        self.xVector=utility.plafonne(xVector*2 + xAngle*20,-20,False)
+        self.yVector=utility.plafonne(yVector*2 + yAngle*20,20,True)
+        self.yVector=utility.plafonne(yVector*2 + yAngle*20,-20,False)
         self.x = x
         self.y = y
         self.speed = 0
@@ -207,7 +211,7 @@ class Missile:
         var.refreshList.append(self)
     
     def vectorTo(self,vector):#décélération proressive du missile
-        return vector/((self.timeAlive+1)/11)
+        return vector/((self.timeAlive/30)+1)
     
     def goTo(self):
 
@@ -215,27 +219,18 @@ class Missile:
         self.yVector = self.vectorTo(self.yVector)
         
         self.x += self.xVector
-        self.y += self.yVector
+        self.y -= self.yVector #c'est un moins car l'origine des y n'est pas en bas mais en haut
     
     def goTick(self):
         self.timeAlive += 1
-        #si loin de la dest, et vecteurs pas trop faibles, et timeAlive pas trop grand, bouger sinon s'arrete
-        if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 25)):
+        #si vecteurs pas trop faibles, et timeAlive pas trop grand, bouger sinon s'arrete
+        if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 500)):
             self.goTo()
         else:# s'arrete
             self.xVector = 0
             self.yVector = 0
             self.sprite.fill((0,0,0,0))
-            var.refreshList.remove(self)
-            try:var.hittedList.remove(self)
-            except:pass
-            self.creator.missileList.remove(self)
-            del self
+            utility.delete(self)
     
     def turn(self):
-<<<<<<< HEAD
-        utility.rotate(self,self.angle)
-=======
-        self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
         utility.rotate(self,self.angle)# on le tourne de cet angle
->>>>>>> 6af1da43fc5ac1a416aec6558b17970241e6aea8
