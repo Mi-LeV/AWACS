@@ -65,6 +65,7 @@ class Plane:
     def __init__(self,x,y):
         print("Plane created")
         self.MAXSPEED = 3
+        self.timeAlive = 0
         self.xVector=0
         self.yVector=0
         self.xDest = x
@@ -109,6 +110,7 @@ class Plane:
 
 
     def goTick(self):
+        self.timeAlive += 1
         if not self.xDest or not self.yDest:# si la dest n'est pas définie, rien faire
             return
         xDistanceToDest=self.xDest-self.x
@@ -119,7 +121,6 @@ class Plane:
             self.xVector = 0
             self.yVector = 0
             return True
-
 
     def shoot(self):
         print("player shoot")
@@ -151,7 +152,7 @@ class PlayerPlane(Plane):
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active):
         super().__init__(x,y)
-        self.MAXSPEED = 1
+        self.MAXSPEED = 2
         self.agro = None
         self.active = active
         if friend:pass
@@ -162,10 +163,34 @@ class IaPlane(Plane):
     
     def goTick(self):
         if self.active:
+            if self.searchAgro():#cherche agro et renvoie true si trouve
+                if utility.getDistance(self,self.agro) < 150 and len(self.missileList)<3 and self.timeAlive%7==0:
+                    #si à moins de 150, et qu'il a moins de 3 missiles en vie et que son tmps de vie est div par7(pour ajouter délai)
+                    self.shoot()
+            objectNear = self.testObjectNear()
+            if objectNear:
+                self.xDest = -(objectNear.x-self.x)
+                self.yDest = -(objectNear.y-self.y)
+            else:
+                self.goAgro()
             super().goTick()
-            self.searchAgro()
-            self.goAgro()
+            
 
+    def testObjectNear(self):
+        minima = 99999999 #valeur très haute, toujours supérieur à distance
+        temp = 99999999 #valeur très haute, toujours supérieur à temp
+        minObj = None
+        for objet in var.refreshList:#test de la distance minimlale
+            if objet != self:#si l'objet le plus proche n'est pas lui meme
+                temp = utility.getDistance(self,objet)#calcul distance
+            if temp < minima:
+                minima = temp
+                minObj = objet#on a l'objet le plus proche
+        if minima < 50:#si l'objet est à moins de 50
+            return minObj
+        else:
+            return None
+        
     def goAgro(self):
         if not self.agro:# si la dest n'est pas définie, rien faire
             return
@@ -179,7 +204,7 @@ class IaPlane(Plane):
                 ennemyList.append(objet)
 
         if ennemyList:#si la liste n'est pas vide
-            minima = 99999999 #valeur très haute
+            minima = 99999999 #valeur très haute, toujours supérieur à distance
             minObj = None
             for objet in ennemyList:#test de la distance minimlale
                 temp = utility.getDistance(self,objet)#calcul distance
@@ -187,8 +212,11 @@ class IaPlane(Plane):
                     minima = temp
                     minObj = objet
             self.agro = minObj
+            return True
         else:
             self.agro = None
+            return False
+    
 
 class Missile:
     def __init__(self,creator,x,y,angle,xVector,yVector):
@@ -230,6 +258,7 @@ class Missile:
             self.xVector = 0
             self.yVector = 0
             self.sprite.fill((0,0,0,0))
+            self.creator.missileList.remove(self)
             utility.delete(self)
     
     def turn(self):

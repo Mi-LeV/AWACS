@@ -14,12 +14,12 @@ fenetre.blit(fond, (0,0))
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
 affFenetre = True
 
-pygame.mixer.music.load("background_music.mp3")#musique de fond
+#pygame.mixer.music.load("background_music.mp3")#musique de fond
 #pygame.mixer.music.play()
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,'blue',True)
-Ennemy = classes.IaPlane(250,270,False,True)
+Ennemy = classes.IaPlane(300,300,False,True)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -31,7 +31,8 @@ while affFenetre:
             try:var.playerList[0].clic(event)#le 1er player de playerlist enregistre nouv destination si la liste est pas vide
             except IndexError:pass
         if event.type == MOUSEBUTTONDOWN and event.button == 3:##clic droit
-            try:var.playerList[0].shoot()#le 1er player de playerlist tire si la liste est pas vide
+            try:
+                var.playerList[0].shoot()#le 1er player de playerlist tire si la liste est pas vide
             except IndexError:pass
         if event.type == KEYDOWN and event.key == K_SPACE:#on crée un nouv player et on le met dans playerlist
             classes.utility.respawn()
