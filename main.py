@@ -28,7 +28,8 @@ while affFenetre:
         if event.type == QUIT:#si on appuie sur la croix de la fenetre 
             affFenetre = False      #On arrête la boucle
         if event.type == MOUSEBUTTONDOWN and event.button == 1:# # clic gauche
-            try:var.playerList[0].clic(event)#le 1er player de playerlist enregistre nouv destination si la liste est pas vide
+            try:var.playerList[0].clic(event)
+            #le 1er player de playerlist enregistre nouv destination si la liste est pas vide
             except IndexError:pass
         if event.type == MOUSEBUTTONDOWN and event.button == 3:##clic droit
             try:
@@ -37,20 +38,22 @@ while affFenetre:
         if event.type == KEYDOWN and event.key == K_SPACE:#on crée un nouv player et on le met dans playerlist
             classes.utility.respawn()
         if event.type == KEYDOWN and event.key == K_k:#on crée un nouv player et on le met dans playerlist
-            try:classes.utility.delete(var.playerList[0])
+            try:var.playerList[0].delete()
             except IndexError:pass
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
-            Ennemy = classes.IaPlane(250,270,False,True)
+            Ennemy = classes.IaPlane(250,270,True,True)
     
     for objet in var.refreshList:#boucle de mouvement
         objet.turn()# on lance la fonction turn de l'objet
         objet.tick()#on lance la fonction tick de l'objet
     
-    var.hitList = []
 
     for objet in var.refreshList:
-        objet.rect = objet.sprite.get_rect(center = (objet.x,objet.y))#on remet les co de l'objet à son centre(évite bug de rotate)
+        objet.rect = objet.sprite.get_rect(center = (objet.x,objet.y))
+        #on remet les co de l'objet à son centre(évite bug de rotate)
     
+    var.hitList = []
+
     for objet in var.refreshList:
         for objet2 in var.refreshList:#boucle de test hitbox
             if objet.rect.colliderect(objet2.rect) and objet != objet2:#si 1 touche 2 et 1 différent de 2

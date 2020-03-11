@@ -120,8 +120,7 @@ class Plane:
             return True
 
     def shoot(self):
-        print("player shoot")
-        self.missileList.append(Missile(self,self.x,self.y,self.angle,self.xVector,self.yVector))
+        self.missileList.append(Missile(self))
     
     def turn(self):
         self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
@@ -130,6 +129,7 @@ class Plane:
 class PlayerPlane(Plane):
     def __init__(self,x,y,color,friend):
         super().__init__(x,y)
+        self.MAXMISSILE = 3
         var.playerList.append(self)
         if friend:pass
             #mettre le sprite ami
@@ -137,12 +137,12 @@ class PlayerPlane(Plane):
             #mettre le sprite ennemi  
         self.friendly = friend
     
-    def __del__(self):
-        try:var.playerList.remove(self)
-        except:pass
+    def shoot(self):
+        if len(self.missileList) < self.MAXMISSILE:
+            super().shoot()
 
-    def clic(self,event): 
-        print("clic")
+
+    def clic(self,event):
         self.xDest = event.pos[0]
         self.yDest = event.pos[1]
 
@@ -151,6 +151,7 @@ class IaPlane(Plane):
         super().__init__(x,y)
         self.MAXSPEED = 1.5
         self.RELOADTIME = 30
+        self.MAXMISSILE = 3
         self.agro = None
         self.active = active
         if friend:pass
@@ -162,16 +163,20 @@ class IaPlane(Plane):
     def tick(self):
         if self.active:
             if self.searchAgro():#cherche agro et renvoie true si trouve
-                if utility.getDistance(self,self.agro) < 150 and len(self.missileList)<3 and self.timeAlive%self.RELOADTIME==0:
+                if utility.getDistance(self,self.agro) < 150 and len(self.missileList)<self.MAXMISSILE and self.timeAlive%self.RELOADTIME==0:
                     #si à moins de 150, et qu'il a moins de 3 missiles en vie et que son tmps de vie est divisible
                     #  par RELOADTIME(pour ajouter délai)
                     self.shoot()
+                
             objectNear = self.testObjectNear()
             if objectNear:
                 self.xDest = -(objectNear.x-self.x)
                 self.yDest = -(objectNear.y-self.y)
             else:
-                self.goAgro()
+                if not self.goAgro():#renvoie True si elle va à l'agro
+                    self.xDest = self.x #sinon on immobilise
+                    self.yDest = self.y
+
             super().tick()
             
 
@@ -192,10 +197,11 @@ class IaPlane(Plane):
         
     def goAgro(self):
         if not self.agro:# si la dest n'est pas définie, rien faire
-            return
+            return False
         self.xDest = self.agro.x
         self.yDest = self.agro.y
-        
+        return True
+
     def searchAgro(self):
         ennemyList = []
         for objet in var.refreshList:
@@ -218,10 +224,16 @@ class IaPlane(Plane):
     
 
 class Missile:
-    def __init__(self,creator,x,y,angle,xVector,yVector):
+    def __init__(self,creator):
 
         print("Missile created")
         self.creator = creator
+        angle = self.creator.angle
+        xVector = self.creator.xVector
+        yVector = self.creator.yVector
+        x = self.creator.x
+        y = self.creator.y
+
         xAngle,yAngle = utility.getCoords(angle)
         self.xVector=utility.plafonne(xVector*2 + xAngle*20,20,True)
         self.xVector=utility.plafonne(xVector*2 + xAngle*20,-20,False)
