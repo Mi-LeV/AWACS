@@ -1,9 +1,10 @@
 ROADMAP Florian : 
     faire IA :
         - chercher agro - Fait
-        - eviter collision avec objet alentours (avion et missile)
-        - quand loin agro, s'approcher de l'agro
-        - si proche agro, tirer (mais avec un délai)
+        - eviter collision avec objet alentours (avion et missile) - Fait
+        - quand loin agro, s'approcher de l'agro - Fait
+        - si proche agro, tirer (mais avec un délai)- Fait
+    
     faire scrolling
 
-    problème : misilelist ne désemplit pas
+    problème : misilelist ne désemplit pas - Resolu

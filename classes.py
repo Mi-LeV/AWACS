@@ -51,16 +51,6 @@ class utility:
         distance = math.sqrt(diffX**2+diffY**2)
         return distance
         
-    @staticmethod
-    def delete(objet):
-        if objet in var.hitList:
-            var.hitList.remove(objet)
-        if objet in var.refreshList:
-            var.refreshList.remove(objet)
-        if objet in var.playerList:
-            var.playerList.remove(objet)
-        del objet
-
 class Plane:
     def __init__(self,x,y):
         print("Plane created")
@@ -80,8 +70,15 @@ class Plane:
         var.refreshList.append(self)
 
 
-    def __del__(self):
+    def delete(self):
         self.sprite.fill((0,0,0,0))
+        if self in var.hitList:
+            var.hitList.remove(self)
+        if self in var.refreshList:
+            var.refreshList.remove(self)
+        if self in var.playerList:
+            var.playerList.remove(self)
+        del self
 
     def vectorTo(self,vector,distanceToDest):
 
@@ -109,7 +106,7 @@ class Plane:
         yDistanceToDest -= self.yVector
 
 
-    def goTick(self):
+    def tick(self):
         self.timeAlive += 1
         if not self.xDest or not self.yDest:# si la dest n'est pas définie, rien faire
             return
@@ -152,7 +149,8 @@ class PlayerPlane(Plane):
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active):
         super().__init__(x,y)
-        self.MAXSPEED = 2
+        self.MAXSPEED = 1.5
+        self.RELOADTIME = 30
         self.agro = None
         self.active = active
         if friend:pass
@@ -161,11 +159,12 @@ class IaPlane(Plane):
             #mettre le sprite ennemi  
         self.friendly = friend
     
-    def goTick(self):
+    def tick(self):
         if self.active:
             if self.searchAgro():#cherche agro et renvoie true si trouve
-                if utility.getDistance(self,self.agro) < 150 and len(self.missileList)<3 and self.timeAlive%7==0:
-                    #si à moins de 150, et qu'il a moins de 3 missiles en vie et que son tmps de vie est div par7(pour ajouter délai)
+                if utility.getDistance(self,self.agro) < 150 and len(self.missileList)<3 and self.timeAlive%self.RELOADTIME==0:
+                    #si à moins de 150, et qu'il a moins de 3 missiles en vie et que son tmps de vie est divisible
+                    #  par RELOADTIME(pour ajouter délai)
                     self.shoot()
             objectNear = self.testObjectNear()
             if objectNear:
@@ -173,7 +172,7 @@ class IaPlane(Plane):
                 self.yDest = -(objectNear.y-self.y)
             else:
                 self.goAgro()
-            super().goTick()
+            super().tick()
             
 
     def testObjectNear(self):
@@ -249,7 +248,7 @@ class Missile:
         self.x += self.xVector
         self.y -= self.yVector #c'est un moins car l'origine des y n'est pas en bas mais en haut
     
-    def goTick(self):
+    def tick(self):
         self.timeAlive += 1
         #si vecteurs pas trop faibles, et timeAlive pas trop grand, bouger sinon s'arrete
         if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 500)):
@@ -257,9 +256,20 @@ class Missile:
         else:# s'arrete
             self.xVector = 0
             self.yVector = 0
-            self.sprite.fill((0,0,0,0))
-            self.creator.missileList.remove(self)
-            utility.delete(self)
+            self.delete()
     
     def turn(self):
         utility.rotate(self,self.angle)# on le tourne de cet angle
+    
+    def delete(self):
+        if self in self.creator.missileList:
+            self.creator.missileList.remove(self)
+        self.sprite.fill((0,0,0,0))
+        if self in var.hitList:
+            var.hitList.remove(self)
+        if self in var.refreshList:
+            var.refreshList.remove(self)
+        if self in var.playerList:
+            var.playerList.remove(self)
+        del self
+

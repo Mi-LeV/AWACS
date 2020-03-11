@@ -44,7 +44,7 @@ while affFenetre:
     
     for objet in var.refreshList:#boucle de mouvement
         objet.turn()# on lance la fonction turn de l'objet
-        objet.goTick()#on lance la fonction tick de l'objet
+        objet.tick()#on lance la fonction tick de l'objet
     
     var.hitList = []
 
@@ -58,7 +58,7 @@ while affFenetre:
                     var.hitList.append(objet) #on ajoute l'objet 1 à la hitList
     
     for objet in var.hitList[::-1]:#boucle delete(on déréférence les objets de toute liste pour pouvoir les supprimer)
-        classes.utility.delete(objet)
+        objet.delete()
     sleep(0.1)#delai graphique
     #Re-collage
     fenetre.blit(fond,(0,0))
