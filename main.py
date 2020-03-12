@@ -11,6 +11,7 @@ fenetre = pygame.display.set_mode((500,500))
 fond = pygame.image.load(var.img_fond).convert()
 fenetre.blit(fond, (0,0))
 
+pygame.display.set_caption("AWACS")
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
 affFenetre = True
 
@@ -49,14 +50,15 @@ while affFenetre:
     
 
     for objet in var.refreshList:
-        objet.rect = objet.sprite.get_rect(center = (objet.x,objet.y))
+        objet.rect = objet.image.get_rect(center = (objet.x,objet.y))
         #on remet les co de l'objet à son centre(évite bug de rotate)
     
     var.hitList = []
 
     for objet in var.refreshList:
         for objet2 in var.refreshList:#boucle de test hitbox
-            if objet.rect.colliderect(objet2.rect) and objet != objet2:#si 1 touche 2 et 1 différent de 2
+            if pygame.sprite.collide_mask(objet,objet2) and objet != objet2:
+                #si 1 touche 2 et 1 différent de 2
                 if not(type(objet)==classes.Missile and objet.creator == objet2 and objet.timeAlive < 5) and not(type(objet2)==classes.Missile and objet2.creator == objet and objet2.timeAlive < 5):#si 1 et 2 sont pas des missiles dans la phase d'invincibilité touchant leur créateur
                     var.hitList.append(objet) #on ajoute l'objet 1 à la hitList
     
@@ -66,7 +68,7 @@ while affFenetre:
     #Re-collage
     fenetre.blit(fond,(0,0))
     for objet in var.refreshList:
-        fenetre.blit(objet.sprite,(objet.x-10,objet.y-10))
+        fenetre.blit(objet.image,(objet.x-10,objet.y-10))
     #Rafraichissement
     pygame.display.flip()
 

@@ -35,9 +35,9 @@ class utility:
         """Rotate the image of the sprite around its center."""
         # `rotozoom` usually looks nicer than `rotate`. Pygame's rotation
         # functions return new images and don't modify the originals.
-        objet.sprite = pygame.transform.rotozoom(objet.orig_sprite, angle, 1)
+        objet.image = pygame.transform.rotozoom(objet.orig_image, angle, 1)
         # Create a new rect with the center of the old rect.
-        objet.rect = objet.sprite.get_rect(center=objet.rect.center)
+        objet.rect = objet.image.get_rect(center=objet.rect.center)
     @staticmethod
     def respawn():#fonction de test, recrée un player
         if not var.playerList:
@@ -51,8 +51,9 @@ class utility:
         distance = math.sqrt(diffX**2+diffY**2)
         return distance
         
-class Plane:
+class Plane(pygame.sprite.Sprite):
     def __init__(self,x,y):
+        pygame.sprite.Sprite.__init__(self) #call Sprite initializer
         print("Plane created")
         self.MAXSPEED = 3
         self.timeAlive = 0
@@ -62,16 +63,17 @@ class Plane:
         self.yDest = y
         self.x = x
         self.y = y
-        self.orig_sprite = pygame.image.load("sprite_plane.png").convert_alpha()
-        self.sprite = pygame.image.load("sprite_plane.png").convert_alpha()
-        self.rect = self.sprite.get_rect(center=(x,y))
+        self.orig_image = pygame.image.load("sprite_plane.png").convert_alpha()
+        self.image = pygame.image.load("sprite_plane.png").convert_alpha()
+        self.rect = self.image.get_rect(center=(x,y))
+        self.mask = pygame.mask.from_surface(self.image)
         self.angle = 90
         self.missileList = []
         var.refreshList.append(self)
 
 
     def delete(self):
-        self.sprite.fill((0,0,0,0))
+        self.image.fill((0,0,0,0))
         if self in var.hitList:
             var.hitList.remove(self)
         if self in var.refreshList:
@@ -223,7 +225,7 @@ class IaPlane(Plane):
             return False
     
 
-class Missile:
+class Missile():
     def __init__(self,creator):
 
         print("Missile created")
@@ -243,9 +245,12 @@ class Missile:
         self.y = y
         self.speed = 0
         self.timeAlive = 0
-        self.orig_sprite = pygame.image.load("sprite_missile.png").convert_alpha()
-        self.sprite = self.orig_sprite
-        self.rect = self.sprite.get_rect(center=(x,y))
+
+        pygame.sprite.Sprite.__init__(self)
+        self.orig_image = pygame.image.load("sprite_missile.png").convert_alpha()
+        self.image = pygame.image.load("sprite_missile.png").convert_alpha()
+        self.rect = self.image.get_rect(center=(x,y))
+        self.mask = pygame.mask.from_surface(self.image)
         self.angle = angle#l'angle natif de l'image
         var.refreshList.append(self)
     
@@ -276,7 +281,7 @@ class Missile:
     def delete(self):
         if self in self.creator.missileList:
             self.creator.missileList.remove(self)
-        self.sprite.fill((0,0,0,0))
+        self.image.fill((0,0,0,0))
         if self in var.hitList:
             var.hitList.remove(self)
         if self in var.refreshList:
