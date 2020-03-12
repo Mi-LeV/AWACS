@@ -149,9 +149,9 @@ class PlayerPlane(Plane):
         self.yDest = event.pos[1]
 
 class IaPlane(Plane):
-    def __init__(self,x,y,friend,active):
+    def __init__(self,x,y,friend,active = True):
         super().__init__(x,y)
-        self.MAXSPEED = 3
+        self.MAXSPEED = 1.5
         self.RELOADTIME = 30
         self.MAXMISSILE = 3
         self.agro = None
@@ -255,7 +255,7 @@ class Missile():
         var.refreshList.append(self)
     
     def vectorTo(self,vector):#décélération proressive du missile
-        return vector/((self.timeAlive/30)+1)
+        return vector/((self.timeAlive/20)+1)
     
     def goTo(self):
 

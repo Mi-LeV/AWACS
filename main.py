@@ -20,7 +20,7 @@ affFenetre = True
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,'blue',True)
-Ennemy = classes.IaPlane(300,300,True,True)
+Ennemy = classes.IaPlane(300,300,False)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -42,7 +42,7 @@ while affFenetre:
             try:var.playerList[0].delete()
             except IndexError:pass
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
-            Ennemy = classes.IaPlane(250,270,True,True)
+            Ennemy = classes.IaPlane(250,270,False)
     
     for objet in var.refreshList:#boucle de mouvement
         objet.turn()# on lance la fonction turn de l'objet
