@@ -20,7 +20,7 @@ affFenetre = True
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,'blue',True)
-Ennemy = classes.IaPlane(300,300,False,True)
+Ennemy = classes.IaPlane(300,300,True,True)
 
 while affFenetre:
     clock = pygame.time.Clock()

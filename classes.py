@@ -151,7 +151,7 @@ class PlayerPlane(Plane):
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active):
         super().__init__(x,y)
-        self.MAXSPEED = 1.5
+        self.MAXSPEED = 3
         self.RELOADTIME = 30
         self.MAXMISSILE = 3
         self.agro = None
@@ -172,8 +172,8 @@ class IaPlane(Plane):
                 
             objectNear = self.testObjectNear()
             if objectNear:
-                self.xDest = -(objectNear.x-self.x)
-                self.yDest = -(objectNear.y-self.y)
+                self.xDest = self.x-(objectNear.x-self.x)
+                self.yDest = self.y-(objectNear.y-self.y)
             else:
                 if not self.goAgro():#renvoie True si elle va à l'agro
                     self.xDest = self.x #sinon on immobilise
