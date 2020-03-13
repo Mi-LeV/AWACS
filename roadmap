@@ -4,7 +4,7 @@ ROADMAP Florian :
         - eviter collision avec objet alentours (avion et missile) - Fait
         - quand loin agro, s'approcher de l'agro - Fait
         - si proche agro, tirer (mais avec un délai)- Fait
-    
+    faire controle à la souris sans clic
     faire scrolling
     masks - Fait
 
