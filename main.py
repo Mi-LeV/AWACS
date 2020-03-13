@@ -7,7 +7,7 @@ import classes #importation des classes
 ##creation de la fenetre
 
 pygame.init()
-fenetre = pygame.display.set_mode((500,500))
+fenetre = pygame.display.set_mode((640,640))
 fond = pygame.image.load(var.img_fond).convert()
 fenetre.blit(fond, (0,0))
 
@@ -20,7 +20,8 @@ affFenetre = True
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,'blue',True)
-Ennemy = classes.IaPlane(300,300,False)
+Ennemy = classes.IaPlane(500,500,False)
+#Ennemy = classes.IaPlane(200,200,True)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -28,11 +29,8 @@ while affFenetre:
     for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
         if event.type == QUIT:#si on appuie sur la croix de la fenetre 
             affFenetre = False      #On arrête la boucle
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:# # clic gauche
-            try:var.playerList[0].clic(event)
-            #le 1er player de playerlist enregistre nouv destination si la liste est pas vide
-            except IndexError:pass
-        if event.type == MOUSEBUTTONDOWN and event.button == 3:##clic droit
+        
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:##clic droit
             try:
                 var.playerList[0].shoot()#le 1er player de playerlist tire si la liste est pas vide
             except IndexError:pass
@@ -43,6 +41,9 @@ while affFenetre:
             except IndexError:pass
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
             Ennemy = classes.IaPlane(250,270,False)
+    try:
+        var.playerList[0].clic(pygame.mouse.get_pos())
+    except IndexError:pass
     
     for objet in var.refreshList:#boucle de mouvement
         objet.turn()# on lance la fonction turn de l'objet
@@ -64,7 +65,7 @@ while affFenetre:
     
     for objet in var.hitList[::-1]:#boucle delete(on déréférence les objets de toute liste pour pouvoir les supprimer)
         objet.delete()
-    sleep(0.1)#delai graphique
+    sleep(0.01)#delai graphique
     #Re-collage
     fenetre.blit(fond,(0,0))
     for objet in var.refreshList:

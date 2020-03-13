@@ -144,9 +144,9 @@ class PlayerPlane(Plane):
             super().shoot()
 
 
-    def clic(self,event):
-        self.xDest = event.pos[0]
-        self.yDest = event.pos[1]
+    def clic(self,position):
+        self.xDest = position[0]
+        self.yDest = position[1]
 
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active = True):
