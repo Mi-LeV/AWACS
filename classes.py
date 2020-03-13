@@ -165,7 +165,7 @@ class IaPlane(Plane):
     def tick(self):
         if self.active:
             if self.searchAgro():#cherche agro et renvoie true si trouve
-                if utility.getDistance(self,self.agro) < 150 and len(self.missileList)<self.MAXMISSILE and self.timeAlive%self.RELOADTIME==0:
+                if utility.getDistance(self,self.agro) < 150 and len(self.missileList)<self.MAXMISSILE and self.timeAlive%self.RELOADTIME==0 and self.timeAlive != 0:
                     #si à moins de 150, et qu'il a moins de 3 missiles en vie et que son tmps de vie est divisible
                     #  par RELOADTIME(pour ajouter délai)
                     self.shoot()
@@ -237,10 +237,10 @@ class Missile():
         y = self.creator.y
 
         xAngle,yAngle = utility.getCoords(angle)
-        self.xVector=utility.plafonne(xVector*2 + xAngle*20,20,True)
-        self.xVector=utility.plafonne(xVector*2 + xAngle*20,-20,False)
-        self.yVector=utility.plafonne(yVector*2 + yAngle*20,20,True)
-        self.yVector=utility.plafonne(yVector*2 + yAngle*20,-20,False)
+        self.xVector=utility.plafonne(xVector*2 + xAngle*30,40,True)
+        self.xVector=utility.plafonne(xVector*2 + xAngle*30,-40,False)
+        self.yVector=utility.plafonne(yVector*2 + yAngle*30,40,True)
+        self.yVector=utility.plafonne(yVector*2 + yAngle*30,-40,False)
         self.x = x
         self.y = y
         self.speed = 0
