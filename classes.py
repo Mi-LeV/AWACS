@@ -147,6 +147,8 @@ class PlayerPlane(Plane):
             self.mask = pygame.mask.from_surface(self.image)
         
         self.friendly = friend
+
+        self.camera = Camera(var.MAP_LIMITS,var.MAP_LIMITS)
     
     def shoot(self):
         if len(self.missileList) < self.MAXMISSILE:
@@ -307,3 +309,20 @@ class Missile():
             var.playerList.remove(self)
         del self
 
+class Camera():
+    def __init__(self, width, height):
+        self.state = pygame.Rect(0, 0, width, height)
+    
+
+    def apply(self, target):
+        return target[0]-self.state[0],target[1]-self.state[1]
+
+    def update(self, target):
+        self.state = target.rect
+
+
+
+class Fond():
+    def __init__(self):
+        self.image = pygame.image.load(var.img_fond).convert()
+        self.rect = self.image.get_rect()

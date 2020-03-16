@@ -8,8 +8,7 @@ import classes #importation des classes
 
 pygame.init()
 fenetre = pygame.display.set_mode((640,640))
-fond = pygame.image.load(var.img_fond).convert()
-fenetre.blit(fond, (0,0))
+fond = classes.Fond()
 
 pygame.display.set_caption("AWACS")
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
@@ -42,7 +41,7 @@ while affFenetre:
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
             Ennemy = classes.IaPlane(250,270,False)
     try:
-        var.playerList[0].clic(pygame.mouse.get_pos())
+        var.playerList[0].clic(Player.camera.apply(pygame.mouse.get_pos()))
     except IndexError:pass
     
     for objet in var.refreshList:#boucle de mouvement
@@ -66,10 +65,13 @@ while affFenetre:
     for objet in var.hitList[::-1]:#boucle delete(on déréférence les objets de toute liste pour pouvoir les supprimer)
         objet.delete()
     sleep(0.05)#delai graphique
+
+    Player.camera.update(Player)
+
     #Re-collage
-    fenetre.blit(fond,(0,0))
+    fenetre.blit(fond.image,Player.camera.apply(fond.rect))
     for objet in var.refreshList:
-        fenetre.blit(objet.image,(objet.x-10,objet.y-10))
+        fenetre.blit(objet.image,Player.camera.apply(objet.rect))
     #Rafraichissement
     pygame.display.flip()
 
