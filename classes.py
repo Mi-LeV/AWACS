@@ -63,8 +63,8 @@ class Plane(pygame.sprite.Sprite):
         self.yDest = y
         self.x = x
         self.y = y
-        self.orig_image = pygame.image.load("sprite_plane.png").convert_alpha()
-        self.image = pygame.image.load("sprite_plane.png").convert_alpha()
+        self.orig_image = pygame.image.load(var.img_plane_default).convert_alpha()
+        self.image = pygame.image.load(var.img_plane_default).convert_alpha()
         self.rect = self.image.get_rect(center=(x,y))
         self.mask = pygame.mask.from_surface(self.image)
         self.angle = 90
@@ -133,10 +133,19 @@ class PlayerPlane(Plane):
         super().__init__(x,y)
         self.MAXMISSILE = 3
         var.playerList.append(self)
-        if friend:pass
+        if friend:
             #mettre le sprite ami
-        else:pass
-            #mettre le sprite ennemi  
+            self.orig_image = pygame.image.load(var.img_blue_player).convert_alpha()
+            self.image = pygame.image.load(var.img_blue_player).convert_alpha()
+            self.rect = self.image.get_rect(center=(x,y))
+            self.mask = pygame.mask.from_surface(self.image)
+        else:
+            #mettre le sprite ennemi 
+            self.orig_image = pygame.image.load(var.img_red_player).convert_alpha()
+            self.image = pygame.image.load(var.img_red_player).convert_alpha()
+            self.rect = self.image.get_rect(center=(x,y))
+            self.mask = pygame.mask.from_surface(self.image)
+        
         self.friendly = friend
     
     def shoot(self):
@@ -156,10 +165,18 @@ class IaPlane(Plane):
         self.MAXMISSILE = 3
         self.agro = None
         self.active = active
-        if friend:pass
+        if friend:
             #mettre le sprite ami
-        else:pass
-            #mettre le sprite ennemi  
+            self.orig_image = pygame.image.load(var.img_blue_IA).convert_alpha()
+            self.image = pygame.image.load(var.img_blue_IA).convert_alpha()
+            self.rect = self.image.get_rect(center=(x,y))
+            self.mask = pygame.mask.from_surface(self.image)
+        else:
+            #mettre le sprite ennemi
+            self.orig_image = pygame.image.load(var.img_red_IA).convert_alpha()
+            self.image = pygame.image.load(var.img_red_IA).convert_alpha()
+            self.rect = self.image.get_rect(center=(x,y))
+            self.mask = pygame.mask.from_surface(self.image)
         self.friendly = friend
     
     def tick(self):
@@ -192,7 +209,7 @@ class IaPlane(Plane):
             if temp < minima:
                 minima = temp
                 minObj = objet#on a l'objet le plus proche
-        if minima < 50:#si l'objet est à moins de 50
+        if minima < 75:#si l'objet est à moins de 50
             return minObj
         else:
             return None

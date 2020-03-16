@@ -4,12 +4,13 @@ ROADMAP Florian :
         - eviter collision avec objet alentours (avion et missile) - Fait
         - quand loin agro, s'approcher de l'agro - Fait
         - si proche agro, tirer (mais avec un délai)- Fait
-    faire controle à la souris sans clic
-    faire scrolling
-    rework anticollision
-    changer image gentil méchant/ IA Player
-    rework distance missile
+    faire controle à la souris sans clic - Fait
+    rework anticollision - Annulé, pour ne pas entraver à son fonctionnement
+    changer image gentil, méchant et IA, Player - Fait
+    rework distance missile -Fait
     masks - Fait
+
+    faire scrolling
 
     problème : missilelist ne désemplit pas - Resolu
                 IA esquive dans mauvais sens - Resolu

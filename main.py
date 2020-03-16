@@ -65,7 +65,7 @@ while affFenetre:
     
     for objet in var.hitList[::-1]:#boucle delete(on déréférence les objets de toute liste pour pouvoir les supprimer)
         objet.delete()
-    sleep(0.01)#delai graphique
+    sleep(0.05)#delai graphique
     #Re-collage
     fenetre.blit(fond,(0,0))
     for objet in var.refreshList:
