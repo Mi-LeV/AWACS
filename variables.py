@@ -1,4 +1,4 @@
-
+MAP_LIMITS = 2000
 refreshList = []
 hitList = []
 playerList = []
