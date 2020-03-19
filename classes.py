@@ -54,7 +54,6 @@ class utility:
 class Plane(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self) #call Sprite initializer
-        print("Plane created")
         self.MAXSPEED = 3
         self.timeAlive = 0
         self.xVector=0
@@ -156,8 +155,8 @@ class PlayerPlane(Plane):
 
 
     def clic(self,position):
-        self.xDest = position[0]
-        self.yDest = position[1]
+        self.xDest = (position[0] - 320)*10
+        self.yDest = (position[1] - 320)*10
 
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active = True):
@@ -247,7 +246,6 @@ class IaPlane(Plane):
 class Missile():
     def __init__(self,creator):
 
-        print("Missile created")
         self.creator = creator
         angle = self.creator.angle
         xVector = self.creator.xVector
@@ -311,14 +309,19 @@ class Missile():
 
 class Camera():
     def __init__(self, width, height):
+        self.WIDTH = width
+        self.HEIGHT = height
         self.state = pygame.Rect(0, 0, width, height)
     
 
     def apply(self, target):
         return target[0]-self.state[0],target[1]-self.state[1]
 
+
+
     def update(self, target):
-        self.state = target.rect
+        self.state = pygame.Rect(target.x-320, target.y-320, target.x + self.WIDTH-320, target.y + self.HEIGHT-320)
+
 
 
 

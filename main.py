@@ -19,8 +19,8 @@ affFenetre = True
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,'blue',True)
-Ennemy = classes.IaPlane(500,500,False)
-#Ennemy = classes.IaPlane(200,200,True)
+#Ennemy = classes.IaPlane(500,500,False)
+#Friend = classes.IaPlane(200,200,True)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -41,7 +41,8 @@ while affFenetre:
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
             Ennemy = classes.IaPlane(250,270,False)
     try:
-        var.playerList[0].clic(Player.camera.apply(pygame.mouse.get_pos()))
+        var.playerList[0].clic(pygame.mouse.get_pos())
+        print(pygame.mouse.get_pos())
     except IndexError:pass
     
     for objet in var.refreshList:#boucle de mouvement
@@ -66,12 +67,22 @@ while affFenetre:
         objet.delete()
     sleep(0.05)#delai graphique
 
-    Player.camera.update(Player)
+    try:
+        var.playerList[0].camera.update(var.playerList[0])
+    except IndexError:pass
 
+    try:
     #Re-collage
-    fenetre.blit(fond.image,Player.camera.apply(fond.rect))
-    for objet in var.refreshList:
-        fenetre.blit(objet.image,Player.camera.apply(objet.rect))
+        fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect))
+        for objet in var.refreshList:
+            fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect))
+    
+    except IndexError:
+
+        fenetre.blit(fond.image,fond.rect)
+        for objet in var.refreshList:
+            fenetre.blit(objet.image,objet.rect)
+    
     #Rafraichissement
     pygame.display.flip()
 
