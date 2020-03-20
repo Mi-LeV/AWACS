@@ -8,7 +8,8 @@ import classes #importation des classes
 
 pygame.init()
 fenetre = pygame.display.set_mode((640,640))
-fond = classes.Fond()
+fond = classes.Fond(var.img_fond)
+fondNoir = classes.Fond(var.img_fondNoir)
 
 pygame.display.set_caption("AWACS")
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
@@ -42,7 +43,6 @@ while affFenetre:
             Ennemy = classes.IaPlane(250,270,False)
     try:
         var.playerList[0].clic(pygame.mouse.get_pos())
-        print(pygame.mouse.get_pos())
     except IndexError:pass
     
     for objet in var.refreshList:#boucle de mouvement
@@ -73,13 +73,17 @@ while affFenetre:
 
     try:
     #Re-collage
+        fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect))
         fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect))
+
         for objet in var.refreshList:
             fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect))
     
     except IndexError:
 
+        fenetre.blit(fondNoir.image,fondNoir.rect)
         fenetre.blit(fond.image,fond.rect)
+
         for objet in var.refreshList:
             fenetre.blit(objet.image,objet.rect)
     

@@ -106,6 +106,14 @@ class Plane(pygame.sprite.Sprite):
         xDistanceToDest -= self.xVector
         yDistanceToDest -= self.yVector
 
+    def testOutOfMap(self):
+        if self.x < 0 or self.x > var.MAP_LIMITS:
+            return True
+        if self.y < 0 or self.y > var.MAP_LIMITS:
+            return True
+        return False
+
+
 
     def tick(self):
         self.timeAlive += 1
@@ -113,9 +121,20 @@ class Plane(pygame.sprite.Sprite):
             return
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
-        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
+        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)) and (not self.testOutOfMap()):
             self.goTo(xDistanceToDest,yDistanceToDest)
         else:# s'arrete
+            if self.testOutOfMap():
+                if self.x < 0:
+                    self.x = 0
+                if self.x > var.MAP_LIMITS:
+                    self.x = var.MAP_LIMITS 
+                
+                if self.y < 0:
+                    self.y = 0
+                if self.y > var.MAP_LIMITS:
+                    self.y = var.MAP_LIMITS 
+                
             self.xVector = 0
             self.yVector = 0
             return True
@@ -326,6 +345,6 @@ class Camera():
 
 
 class Fond():
-    def __init__(self):
-        self.image = pygame.image.load(var.img_fond).convert()
+    def __init__(self,image):
+        self.image = pygame.image.load(image).convert()
         self.rect = self.image.get_rect()

@@ -11,6 +11,9 @@ ROADMAP Florian :
     masks - Fait
 
     faire scrolling
+                -virer le vide autour
+                -mettre des limites au joueur - Fait
+                -trouver image plus grande (2000*2000) avec bordures rouges
 
     problème : missilelist ne désemplit pas - Resolu
                 IA esquive dans mauvais sens - Resolu
