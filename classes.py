@@ -121,7 +121,9 @@ class Plane(pygame.sprite.Sprite):
             return
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
-        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)) and (not self.testOutOfMap()):
+        if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
+            if self.testOutOfMap():
+                Notif('issou',300)
             self.goTo(xDistanceToDest,yDistanceToDest)
         else:# s'arrete
             if self.testOutOfMap():
@@ -304,7 +306,7 @@ class Missile():
     def tick(self):
         self.timeAlive += 1
         #si vecteurs pas trop faibles, et timeAlive pas trop grand, bouger sinon s'arrete
-        if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 500)):
+        if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 500)) and (not self.testOutOfMap()):
             self.goTo()
         else:# s'arrete
             self.xVector = 0
@@ -325,6 +327,13 @@ class Missile():
         if self in var.playerList:
             var.playerList.remove(self)
         del self
+    
+    def testOutOfMap(self):
+        if self.x < 0 or self.x > var.MAP_LIMITS:
+            return True
+        if self.y < 0 or self.y > var.MAP_LIMITS:
+            return True
+        return False
 
 class Camera():
     def __init__(self, width, height):
@@ -333,8 +342,8 @@ class Camera():
         self.state = pygame.Rect(0, 0, width, height)
     
 
-    def apply(self, target):
-        return target[0]-self.state[0],target[1]-self.state[1]
+    def apply(self, target,xShift = 0,yShift = 0):
+        return target[0]-self.state[0] + xShift,target[1]-self.state[1] + yShift
 
 
 
@@ -342,9 +351,30 @@ class Camera():
         self.state = pygame.Rect(target.x-320, target.y-320, target.x + self.WIDTH-320, target.y + self.HEIGHT-320)
 
 
-
-
 class Fond():
     def __init__(self,image):
         self.image = pygame.image.load(image).convert()
         self.rect = self.image.get_rect()
+
+class Notif():
+    def __init__(self,texte,temps):
+        #font = pygame.font.SysFont('arial.ttc', 72)
+        #self.corps = font.render(texte, True, (255,0,0),(255,255,255))
+        self.corps = pygame.Surface((200,200))
+        self.corps.fill((255,225,255))
+        self.texte = texte
+        self.timeAlive = 0
+        self.temps = temps
+        var.notifList.append(self)
+    
+    def tick(self):
+        if self.timeAlive > self.temps:
+            self.delete()
+        self.timeAlive += 1
+
+    def delete(self):
+        if self in var.notifList:
+            var.notifList.remove(self)
+        self.corps.fill((0,0,0))
+        del self
+

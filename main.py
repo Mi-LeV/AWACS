@@ -7,6 +7,7 @@ import classes #importation des classes
 ##creation de la fenetre
 
 pygame.init()
+pygame.font.init()
 fenetre = pygame.display.set_mode((640,640))
 fond = classes.Fond(var.img_fond)
 fondNoir = classes.Fond(var.img_fondNoir)
@@ -22,6 +23,7 @@ affFenetre = True
 Player = classes.PlayerPlane(150,200,'blue',True)
 #Ennemy = classes.IaPlane(500,500,False)
 #Friend = classes.IaPlane(200,200,True)
+classes.Notif('issou',999999)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -65,15 +67,35 @@ while affFenetre:
     
     for objet in var.hitList[::-1]:#boucle delete(on déréférence les objets de toute liste pour pouvoir les supprimer)
         objet.delete()
+
+    for notif in var.notifList:
+        notif.tick()
+
+
+    ###########rafraichissement, affichage
+
     sleep(0.05)#delai graphique
+
+    
 
     try:
         var.playerList[0].camera.update(var.playerList[0])
     except IndexError:pass
 
+    #####HUD
+    try:
+        for notif in var.notifList:
+            fenetre.blit(notif.corps,(var.playerList[0].x,var.playerList[0].y))
+#            fenetre.blit(notif.corps,var.playerList[0].camera.apply((100,100)))
+
+    except IndexError:
+        for notif in var.notifList:pass
+#            fenetre.blit(notif.corps,(100,100))
+
+    #####fonds, avions,missiles
     try:
     #Re-collage
-        fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect))
+        fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2,-var.MAP_LIMITS/2))
         fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect))
 
         for objet in var.refreshList:
@@ -81,7 +103,7 @@ while affFenetre:
     
     except IndexError:
 
-        fenetre.blit(fondNoir.image,fondNoir.rect)
+        fenetre.blit(fondNoir.image,(fondNoir.rect[0]-var.MAP_LIMITS/2,fondNoir.rect[0]-var.MAP_LIMITS/2))
         fenetre.blit(fond.image,fond.rect)
 
         for objet in var.refreshList:
