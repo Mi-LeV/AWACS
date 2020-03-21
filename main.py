@@ -8,7 +8,7 @@ import classes #importation des classes
 
 pygame.init()
 pygame.font.init()
-fenetre = pygame.display.set_mode((640,640))
+fenetre = pygame.display.set_mode((var.SCREEN_SIZE,var.SCREEN_SIZE))
 fond = classes.Fond(var.img_fond)
 fondNoir = classes.Fond(var.img_fondNoir)
 
@@ -20,9 +20,8 @@ affFenetre = True
 #pygame.mixer.music.play()
 
 ##debut des evenements
-Player = classes.PlayerPlane(150,200,'blue',True)
-Ennemy = classes.IaPlane(1000,1000,False)
-Friend = classes.IaPlane(200,200,True)
+Player = classes.PlayerPlane(150,200,True)
+classes.utility.spawnGroup(500,500,False,5)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -41,7 +40,7 @@ while affFenetre:
             try:var.playerList[0].delete()
             except IndexError:pass
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
-            Ennemy = classes.IaPlane(1000,1000,False)
+            classes.utility.spawnGroup(1000,1000,False,5)
     
     
     for objet in var.refreshList:#boucle de mouvement
@@ -59,7 +58,8 @@ while affFenetre:
         for objet2 in var.refreshList:#boucle de test hitbox
             if pygame.sprite.collide_mask(objet,objet2) and objet != objet2:
                 #si 1 touche 2 et 1 différent de 2
-                if not(type(objet)==classes.Missile and objet.creator == objet2 and objet.timeAlive < 5) and not(type(objet2)==classes.Missile and objet2.creator == objet and objet2.timeAlive < 5):#si 1 et 2 sont pas des missiles dans la phase d'invincibilité touchant leur créateur
+                if not(type(objet)==classes.Missile and objet.creator == objet2 and objet.timeAlive < 5) and not(type(objet2)==classes.Missile and objet2.creator == objet and objet2.timeAlive < 5):
+                    #si 1 et 2 sont pas des missiles dans la phase d'invincibilité touchant leur créateur
                     var.hitList.append(objet) #on ajoute l'objet 1 à la hitList
     
     for objet in var.hitList[::-1]:#boucle delete(on déréférence les objets de toute liste pour pouvoir les supprimer)
@@ -71,7 +71,7 @@ while affFenetre:
 
     ###########rafraichissement, affichage
 
-    sleep(0.05)#delai graphique
+    sleep(var.DELAI)#delai graphique
 
     
 
@@ -98,28 +98,25 @@ while affFenetre:
     
     #####HUD
     for notif in var.refreshNotifList:
-        fenetre.blit(notif.corps,(100,0))
+        fenetre.blit(notif.corps,(50,320))
     
     try:
         for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
             if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
-                newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
+                newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
                 if newIconList:
                     classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")#creation de l'icone
             
             #test si un ami est hors de vue du joueur
             if type(objet) != classes.Missile and objet.friendly == var.playerList[0].friendly:
-                newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
+                newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
                 if newIconList:
                     classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")#creation de l'icone
     except IndexError:pass
 
-
     for icon in var.refreshIconlist:
         fenetre.blit(icon.corps,(icon.x,icon.y))#on affiche les icones
         icon.delete()#puis on les delete
-
-
 
     #Rafraichissement
     pygame.display.flip()

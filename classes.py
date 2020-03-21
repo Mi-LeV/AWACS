@@ -1,6 +1,7 @@
 import pygame
 import math
 import variables as var
+from random import randrange
 class utility:
     @staticmethod
     def plafonne(nombre,plafond,plafondMax):
@@ -42,7 +43,7 @@ class utility:
     def respawn():#fonction de test, recrée un player
         if not var.playerList:
             global Player
-            Player = PlayerPlane(250,230,'blue',True)
+            Player = PlayerPlane(250,230,True)
     
     @staticmethod
     def getDistance(objet,objet2):
@@ -51,6 +52,13 @@ class utility:
         distance = math.sqrt(diffX**2+diffY**2)
         return distance
         
+    @staticmethod
+    def spawnGroup(x,y,friendly,number):
+        for i in range(number):
+            IaPlane(x+randrange(-100,100,20),y+randrange(-100,100,20),friendly)
+
+
+
 class Plane(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self) #call Sprite initializer
@@ -133,11 +141,12 @@ class Plane(pygame.sprite.Sprite):
         self.missileList.append(Missile(self))
     
     def turn(self):
-        self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
+        self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360
+        #calcul de l'angle de l'ojet par rapport à sa dest
         utility.rotate(self,self.angle)# on le tourne de cet angle
 
 class PlayerPlane(Plane):
-    def __init__(self,x,y,color,friend):
+    def __init__(self,x,y,friend):
         super().__init__(x,y)
         self.MAXMISSILE = 3
         var.playerList.append(self)
@@ -163,11 +172,6 @@ class PlayerPlane(Plane):
         if len(self.missileList) < self.MAXMISSILE:
             super().shoot()
 
-
-    def clic(self,position):
-        self.xDest,self.yDest = ((position[0]-320)*4,(position[1]-320)*4)
-        print(position)
-
     def tick(self):
         if self.testOutOfMap() and (not self.notifList):
             NotifOut('Hors des limites de la map, mort dans ',60,self)
@@ -182,15 +186,15 @@ class PlayerPlane(Plane):
         self.goTo()
     
     def goTo(self):
-        mouse = pygame.mouse.get_pos()
-        self.xVector = self.vectorTo(self.xVector,mouse[0])
-        self.yVector = self.vectorTo(self.yVector,mouse[1])
+        self.mouse = pygame.mouse.get_pos()
+        self.xVector = self.vectorTo(self.xVector,self.mouse[0])
+        self.yVector = self.vectorTo(self.yVector,self.mouse[1])
         
         self.x += self.xVector
         self.y += self.yVector
 
     def vectorTo(self,vector,mouse):
-        distanceToDest = mouse - 320
+        distanceToDest = mouse - var.SCREEN_SIZE/2
         if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
             vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),self.MAXSPEED,True)
         else:
@@ -199,7 +203,8 @@ class PlayerPlane(Plane):
         return vector
     
     def turn(self):
-        self.angle = (utility.getBearing((320,320),pygame.mouse.get_pos())+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
+        self.angle = (utility.getBearing((var.SCREEN_SIZE,var.SCREEN_SIZE),pygame.mouse.get_pos())+90)%360 
+        #calcul de l'angle de l'ojet par rapport à sa dest
         utility.rotate(self,self.angle)# on le tourne de cet angle
 
 class IaPlane(Plane):
@@ -371,7 +376,8 @@ class Camera():
 
 
     def update(self, target):
-        self.state = pygame.Rect(target.x-320, target.y-320, target.x + self.WIDTH-320, target.y + self.HEIGHT-320)
+        self.state = pygame.Rect(target.x-var.SCREEN_SIZE/2, target.y-var.SCREEN_SIZE/2, 
+        target.x + self.WIDTH-var.SCREEN_SIZE/2, target.y + self.HEIGHT-var.SCREEN_SIZE/2)
 
 
 class Fond():
@@ -381,7 +387,7 @@ class Fond():
 
 class Notif():
     def __init__(self,texte,temps,creator):
-        self.font = pygame.font.Font('18 ARMY.otf', 20)
+        self.font = pygame.font.Font('18 ARMY.otf', 25)
         self.corps = self.font.render(texte, True, (255,0,0))
         self.texte = texte
         self.timeAlive = 0
@@ -420,9 +426,9 @@ class NotifOut(Notif):
 class Icon():
     def __init__(self,xy,iconType):
         x,y = xy
-        self.x = utility.plafonne(x,640,True)
+        self.x = utility.plafonne(x,var.SCREEN_SIZE,True)
         self.x = utility.plafonne(self.x,0,False)-10
-        self.y = utility.plafonne(y,640,True)
+        self.y = utility.plafonne(y,var.SCREEN_SIZE,True)
         self.y = utility.plafonne(self.y,0,False)-10
 
         var.refreshIconlist.append(self)
@@ -436,3 +442,4 @@ class Icon():
     def delete(self):
         var.refreshIconlist.remove(self)
         del self
+

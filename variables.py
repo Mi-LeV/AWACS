@@ -1,4 +1,6 @@
 MAP_LIMITS = 2000
+DELAI = 0.05
+SCREEN_SIZE = 640
 
 refreshList = []
 hitList = []
