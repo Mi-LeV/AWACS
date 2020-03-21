@@ -21,8 +21,8 @@ affFenetre = True
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,'blue',True)
-#Ennemy = classes.IaPlane(500,500,False)
-#Friend = classes.IaPlane(200,200,True)
+Ennemy = classes.IaPlane(1000,1000,False)
+Friend = classes.IaPlane(200,200,True)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -41,7 +41,7 @@ while affFenetre:
             try:var.playerList[0].delete()
             except IndexError:pass
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
-            Ennemy = classes.IaPlane(250,270,False)
+            Ennemy = classes.IaPlane(1000,1000,False)
     
     
     for objet in var.refreshList:#boucle de mouvement
@@ -99,6 +99,23 @@ while affFenetre:
     #####HUD
     for notif in var.refreshNotifList:
         fenetre.blit(notif.corps,(100,0))
+    
+    for objet in var.refreshList:
+        if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
+            newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
+            if newIconList:
+                classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")
+        
+        if type(objet) != classes.Missile and objet.friendly == var.playerList[0].friendly:
+            newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
+            if newIconList:
+                classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")
+    
+    for icon in var.refreshIconlist:
+        fenetre.blit(icon.corps,(icon.x,icon.y))
+        icon.delete()
+
+
 
     #Rafraichissement
     pygame.display.flip()

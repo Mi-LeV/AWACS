@@ -417,3 +417,20 @@ class NotifOut(Notif):
         self.corps = self.font.render(self.texte + str(round((self.temps-self.timeAlive+1)/20,1)), True, (255,0,0))
         super().tick()
 
+class Icon():
+    def __init__(self,xy,iconType):
+        x,y = xy
+        self.x = utility.plafonne(x,640,True)
+        self.x = utility.plafonne(self.x,0,False)-10
+        self.y = utility.plafonne(y,640,True)
+        self.y = utility.plafonne(self.y,0,False)-10
+
+        var.refreshIconlist.append(self)
+        if iconType == "ennemy":
+            self.corps = pygame.image.load(var.img_iconEnnemy).convert_alpha()
+        elif iconType == "friend":
+            self.corps = pygame.image.load(var.img_iconFriend).convert_alpha()
+    
+    def delete(self):
+        var.refreshIconlist.remove(self)
+        del self
