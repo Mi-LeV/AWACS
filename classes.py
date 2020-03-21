@@ -430,6 +430,8 @@ class Icon():
             self.corps = pygame.image.load(var.img_iconEnnemy).convert_alpha()
         elif iconType == "friend":
             self.corps = pygame.image.load(var.img_iconFriend).convert_alpha()
+        elif iconType == "objective":
+            self.corps = pygame.image.load(var.img_iconObjective).convert_alpha()
     
     def delete(self):
         var.refreshIconlist.remove(self)

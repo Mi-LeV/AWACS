@@ -100,20 +100,24 @@ while affFenetre:
     for notif in var.refreshNotifList:
         fenetre.blit(notif.corps,(100,0))
     
-    for objet in var.refreshList:
-        if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
-            newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
-            if newIconList:
-                classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")
-        
-        if type(objet) != classes.Missile and objet.friendly == var.playerList[0].friendly:
-            newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
-            if newIconList:
-                classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")
-    
+    try:
+        for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
+            if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
+                newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
+                if newIconList:
+                    classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")#creation de l'icone
+            
+            #test si un ami est hors de vue du joueur
+            if type(objet) != classes.Missile and objet.friendly == var.playerList[0].friendly:
+                newIconList = list(filter(lambda x: x<-10 or x > 650, var.playerList[0].camera.apply(objet.rect)))
+                if newIconList:
+                    classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")#creation de l'icone
+    except IndexError:pass
+
+
     for icon in var.refreshIconlist:
-        fenetre.blit(icon.corps,(icon.x,icon.y))
-        icon.delete()
+        fenetre.blit(icon.corps,(icon.x,icon.y))#on affiche les icones
+        icon.delete()#puis on les delete
 
 
 

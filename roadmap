@@ -17,8 +17,8 @@ ROADMAP Florian :
                 -trouver image plus grande (2000*2000) avec bordures rouges - Fait
     
     faire minimap
-                -points sur les cotés de l'écran
-                
+                -points sur les cotés de l'écran - Fait
+
     problème : missilelist ne désemplit pas - Resolu
                 IA esquive dans mauvais sens - Resolu
                 contrôle souris buggé - Resolu
