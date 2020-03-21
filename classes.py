@@ -122,21 +122,9 @@ class Plane(pygame.sprite.Sprite):
         xDistanceToDest=self.xDest-self.x
         yDistanceToDest=self.yDest-self.y
         if not((3 > xDistanceToDest > -3) and (3 > yDistanceToDest > -3)):
-            if self.testOutOfMap():
-                Notif('issou',300)
             self.goTo(xDistanceToDest,yDistanceToDest)
         else:# s'arrete
-            if self.testOutOfMap():
-                if self.x < 0:
-                    self.x = 0
-                if self.x > var.MAP_LIMITS:
-                    self.x = var.MAP_LIMITS 
-                
-                if self.y < 0:
-                    self.y = 0
-                if self.y > var.MAP_LIMITS:
-                    self.y = var.MAP_LIMITS 
-                
+            
             self.xVector = 0
             self.yVector = 0
             return True
@@ -167,7 +155,8 @@ class PlayerPlane(Plane):
             self.mask = pygame.mask.from_surface(self.image)
         
         self.friendly = friend
-
+        self.notifList = []
+        self.notifOutList =[]
         self.camera = Camera(var.MAP_LIMITS,var.MAP_LIMITS)
     
     def shoot(self):
@@ -178,6 +167,17 @@ class PlayerPlane(Plane):
     def clic(self,position):
         self.xDest = (position[0] - 320)*10
         self.yDest = (position[1] - 320)*10
+
+    def tick(self):
+        if self.testOutOfMap() and (not self.notifList):
+            NotifOut('Hors des limites de la map, mort dans 3 sec...',60,self)
+        if (not self.testOutOfMap()) and self.notifList:
+            for notif in self.notifOutList:
+                notif.delete()
+        for notif in self.notifList:
+            if notif.timeAlive > 60:
+                self.delete()
+        super().tick()
 
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active = True):
@@ -306,7 +306,7 @@ class Missile():
     def tick(self):
         self.timeAlive += 1
         #si vecteurs pas trop faibles, et timeAlive pas trop grand, bouger sinon s'arrete
-        if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 500)) and (not self.testOutOfMap()):
+        if not(((-1.5<self.xVector < 1.5) and (-1.5<self.yVector < 1.5))or ( self.timeAlive > 500)):
             self.goTo()
         else:# s'arrete
             self.xVector = 0
@@ -357,24 +357,35 @@ class Fond():
         self.rect = self.image.get_rect()
 
 class Notif():
-    def __init__(self,texte,temps):
-        #font = pygame.font.SysFont('arial.ttc', 72)
-        #self.corps = font.render(texte, True, (255,0,0),(255,255,255))
-        self.corps = pygame.Surface((200,200))
-        self.corps.fill((255,225,255))
+    def __init__(self,texte,temps,creator):
+        font = pygame.font.SysFont('impact.ttc', 30)
+        self.corps = font.render(texte, True, (255,0,0))
         self.texte = texte
         self.timeAlive = 0
         self.temps = temps
-        var.notifList.append(self)
+        self.creator = creator
+        self.creator.notifList.append(self)
+        var.refreshNotifList.append(self)
     
     def tick(self):
-        if self.timeAlive > self.temps:
+        if self.timeAlive > self.temps+1:
             self.delete()
         self.timeAlive += 1
 
     def delete(self):
-        if self in var.notifList:
-            var.notifList.remove(self)
+        if self in var.refreshNotifList:
+            var.refreshNotifList.remove(self)
+        if self in self.creator.notifList:
+            self.creator.notifList.remove(self)
         self.corps.fill((0,0,0))
         del self
 
+class NotifOut(Notif):
+    def __init__(self,texte,temps,creator):
+        super().__init__(texte,temps,creator)
+        self.creator.notifOutList.append(self)
+    
+    def delete(self):
+        if self in self.creator.notifOutList:
+            self.creator.notifOutList.remove(self)
+        super().delete()

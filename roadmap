@@ -13,10 +13,10 @@ ROADMAP Florian :
     faire scrolling
                 -virer le vide autour
                 -mettre des limites au joueur - Fait
-                -mettre notif 2 sec au joueur
-                -trouver image plus grande (2000*2000) avec bordures rouges
+                -mettre notif 3 sec au joueur - Fait
+                -trouver image plus grande (2000*2000) avec bordures rouges - Fait
 
     problème : missilelist ne désemplit pas - Resolu
                 IA esquive dans mauvais sens - Resolu
                 contrôle souris
-                notif ne se voit pas
+                notif ne se voit pas - Resolu

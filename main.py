@@ -23,7 +23,6 @@ affFenetre = True
 Player = classes.PlayerPlane(150,200,'blue',True)
 #Ennemy = classes.IaPlane(500,500,False)
 #Friend = classes.IaPlane(200,200,True)
-classes.Notif('issou',999999)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -68,7 +67,7 @@ while affFenetre:
     for objet in var.hitList[::-1]:#boucle delete(on déréférence les objets de toute liste pour pouvoir les supprimer)
         objet.delete()
 
-    for notif in var.notifList:
+    for notif in var.refreshNotifList:
         notif.tick()
 
 
@@ -79,22 +78,12 @@ while affFenetre:
     
 
     try:
-        var.playerList[0].camera.update(var.playerList[0])
+        var.playerList[0].camera.update(var.playerList[0])#on update la position de la caméra
     except IndexError:pass
 
-    #####HUD
-    try:
-        for notif in var.notifList:
-            fenetre.blit(notif.corps,(var.playerList[0].x,var.playerList[0].y))
-#            fenetre.blit(notif.corps,var.playerList[0].camera.apply((100,100)))
-
-    except IndexError:
-        for notif in var.notifList:pass
-#            fenetre.blit(notif.corps,(100,100))
 
     #####fonds, avions,missiles
     try:
-    #Re-collage
         fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2,-var.MAP_LIMITS/2))
         fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect))
 
@@ -109,6 +98,10 @@ while affFenetre:
         for objet in var.refreshList:
             fenetre.blit(objet.image,objet.rect)
     
+    #####HUD
+    for notif in var.refreshNotifList:
+        fenetre.blit(notif.corps,(100,0))
+
     #Rafraichissement
     pygame.display.flip()
 
