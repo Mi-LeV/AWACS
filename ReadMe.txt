@@ -1,0 +1,1 @@
+The Semi font is free of charge for personal use. For commercial use please contact the Designer.

@@ -165,19 +165,42 @@ class PlayerPlane(Plane):
 
 
     def clic(self,position):
-        self.xDest = (position[0] - 320)*10
-        self.yDest = (position[1] - 320)*10
+        self.xDest,self.yDest = ((position[0]-320)*4,(position[1]-320)*4)
+        print(position)
 
     def tick(self):
         if self.testOutOfMap() and (not self.notifList):
-            NotifOut('Hors des limites de la map, mort dans 3 sec...',60,self)
+            NotifOut('Hors des limites de la map, mort dans ',60,self)
         if (not self.testOutOfMap()) and self.notifList:
             for notif in self.notifOutList:
                 notif.delete()
         for notif in self.notifList:
             if notif.timeAlive > 60:
                 self.delete()
-        super().tick()
+        
+        self.timeAlive += 1
+        self.goTo()
+    
+    def goTo(self):
+        mouse = pygame.mouse.get_pos()
+        self.xVector = self.vectorTo(self.xVector,mouse[0])
+        self.yVector = self.vectorTo(self.yVector,mouse[1])
+        
+        self.x += self.xVector
+        self.y += self.yVector
+
+    def vectorTo(self,vector,mouse):
+        distanceToDest = mouse - 320
+        if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),self.MAXSPEED,True)
+        else:
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-self.MAXSPEED,False)
+        
+        return vector
+    
+    def turn(self):
+        self.angle = (utility.getBearing((320,320),pygame.mouse.get_pos())+90)%360 #calcul de l'angle de l'ojet par rapport à sa dest
+        utility.rotate(self,self.angle)# on le tourne de cet angle
 
 class IaPlane(Plane):
     def __init__(self,x,y,friend,active = True):
@@ -358,8 +381,8 @@ class Fond():
 
 class Notif():
     def __init__(self,texte,temps,creator):
-        font = pygame.font.SysFont('impact.ttc', 30)
-        self.corps = font.render(texte, True, (255,0,0))
+        self.font = pygame.font.Font('18 ARMY.otf', 20)
+        self.corps = self.font.render(texte, True, (255,0,0))
         self.texte = texte
         self.timeAlive = 0
         self.temps = temps
@@ -389,3 +412,8 @@ class NotifOut(Notif):
         if self in self.creator.notifOutList:
             self.creator.notifOutList.remove(self)
         super().delete()
+    
+    def tick(self):
+        self.corps = self.font.render(self.texte + str(round((self.temps-self.timeAlive+1)/20,1)), True, (255,0,0))
+        super().tick()
+

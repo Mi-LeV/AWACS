@@ -42,9 +42,7 @@ while affFenetre:
             except IndexError:pass
         if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
             Ennemy = classes.IaPlane(250,270,False)
-    try:
-        var.playerList[0].clic(pygame.mouse.get_pos())
-    except IndexError:pass
+    
     
     for objet in var.refreshList:#boucle de mouvement
         objet.turn()# on lance la fonction turn de l'objet
