@@ -317,8 +317,8 @@ class Missile():
         self.timeAlive = 0
 
         pygame.sprite.Sprite.__init__(self)
-        self.orig_image = pygame.image.load("sprite_missile.png").convert_alpha()
-        self.image = pygame.image.load("sprite_missile.png").convert_alpha()
+        self.orig_image = pygame.image.load(var.img_sprite_missile).convert_alpha()
+        self.image = pygame.image.load(var.img_sprite_missile).convert_alpha()
         self.rect = self.image.get_rect(center=(x,y))
         self.mask = pygame.mask.from_surface(self.image)
         self.angle = angle#l'angle natif de l'image
