@@ -47,7 +47,7 @@ class utility:
     def respawn():#fonction de test, recrée un player
         if not var.playerList:
             global Player
-            Player = PlayerPlane(250,230,True)
+            Player = PlayerPlane(250,250,True)
     
     @staticmethod
     def getDistance(objet,objet2):

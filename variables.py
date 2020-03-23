@@ -1,6 +1,6 @@
-MAP_LIMITS = 2000
-DELAI = 0.05
-SCREEN_SIZE = 640
+MAP_LIMITS = 2000 #2000X2000
+DELAI = 0.05 #secondes
+SCREEN_SIZE = 640 # fenetre en 640X640
 
 refreshList = []
 hitList = []
