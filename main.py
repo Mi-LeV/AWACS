@@ -18,12 +18,12 @@ pygame.display.set_caption("AWACS")
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
 affFenetre = True
 
-#pygame.mixer.music.load("background_music.mp3")#musique de fond
-#pygame.mixer.music.play()
+pygame.mixer.music.load(var.music_bigfoot)#musique de fond
+pygame.mixer.music.load(var.music_smash)#musique de fond
+pygame.mixer.music.play()
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,True)
-classes.utility.spawnGroup(500,500,False,5)
 
 while affFenetre:
     clock = pygame.time.Clock()
@@ -41,8 +41,10 @@ while affFenetre:
         if event.type == KEYDOWN and event.key == K_k:#on crée un nouv player et on le met dans playerlist
             try:var.playerList[0].delete()
             except IndexError:pass
-        if event.type == KEYDOWN and event.key == K_n:#on crée un nouv player et on le met dans playerlist
+        if event.type == KEYDOWN and event.key == K_n:
             classes.utility.spawnGroup(1000,1000,False,5)
+        if event.type == KEYDOWN and event.key == K_b:
+            classes.utility.spawnGroup(100,100,True,5)
     
     
     for objet in var.refreshList:#boucle de mouvement

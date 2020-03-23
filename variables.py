@@ -22,3 +22,6 @@ img_red_IA = 'images/img_sprite_plane_red_IA.png'
 img_blue_player = 'images/img_sprite_plane_blue_player.png'
 img_blue_IA = 'images/img_sprite_plane_blue_IA.png'
 img_sprite_missile = 'images/img_sprite_missile.png'
+
+music_smash = 'smash.mp3'
+music_bigfoot = 'bigfoot.mp3'

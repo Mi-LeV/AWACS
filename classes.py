@@ -59,7 +59,7 @@ class utility:
     @staticmethod
     def spawnGroup(x,y,friendly,number):
         for i in range(number):
-            IaPlane(x+randrange(-100,100,20),y+randrange(-100,100,20),friendly)
+            IaPlane(x+randrange(-100,100,30),y+randrange(-100,100,30),friendly)
 
 
 
