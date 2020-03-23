@@ -1,7 +1,11 @@
-import pygame
 import math
-import variables as var
 from random import randrange
+
+import pygame
+
+import variables as var
+
+
 class utility:
     @staticmethod
     def plafonne(nombre,plafond,plafondMax):
@@ -203,7 +207,7 @@ class PlayerPlane(Plane):
         return vector
     
     def turn(self):
-        self.angle = (utility.getBearing((var.SCREEN_SIZE,var.SCREEN_SIZE),pygame.mouse.get_pos())+90)%360 
+        self.angle = (utility.getBearing((var.SCREEN_SIZE/2,var.SCREEN_SIZE/2),pygame.mouse.get_pos())+90)%360 
         #calcul de l'angle de l'ojet par rapport à sa dest
         utility.rotate(self,self.angle)# on le tourne de cet angle
 
@@ -442,4 +446,3 @@ class Icon():
     def delete(self):
         var.refreshIconlist.remove(self)
         del self
-

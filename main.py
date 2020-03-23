@@ -1,8 +1,10 @@
-import pygame
 from time import sleep
-from pygame.locals import * #les var de pygame
-import variables as var #importion des variables globales
-import classes #importation des classes
+
+import pygame
+from pygame.locals import *  # les var de pygame
+
+import classes  # importation des classes
+import variables as var  # importion des variables globales
 
 ##creation de la fenetre
 
