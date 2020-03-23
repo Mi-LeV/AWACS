@@ -10,6 +10,7 @@ import variables as var  # importion des variables globales
 
 pygame.init()
 pygame.font.init()
+#fenetre = pygame.display.set_mode((var.SCREEN_SIZE,var.SCREEN_SIZE),pygame.FULLSCREEN)
 fenetre = pygame.display.set_mode((var.SCREEN_SIZE,var.SCREEN_SIZE))
 fond = classes.Fond(var.img_fond)
 fondNoir = classes.Fond(var.img_fondNoir)
@@ -18,8 +19,12 @@ pygame.display.set_caption("AWACS")
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
 affFenetre = True
 
-pygame.mixer.music.load(var.music_bigfoot)#musique de fond
-pygame.mixer.music.load(var.music_smash)#musique de fond
+#musique de fond
+pygame.mixer.music.load(var.music_hell_march)
+pygame.mixer.music.load(var.music_face_the_enemy2)
+pygame.mixer.music.load(var.music_face_the_enemy1)
+pygame.mixer.music.load(var.music_bigfoot)
+pygame.mixer.music.load(var.music_smash)
 pygame.mixer.music.play()
 
 ##debut des evenements
@@ -29,7 +34,7 @@ while affFenetre:
     clock = pygame.time.Clock()
     clock.tick(60)
     for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
-        if event.type == QUIT:#si on appuie sur la croix de la fenetre 
+        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_s):#si on appuie sur la croix de la fenetre 
             affFenetre = False      #On arrête la boucle
         
         if event.type == MOUSEBUTTONDOWN and event.button == 1:##clic droit
