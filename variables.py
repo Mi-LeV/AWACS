@@ -1,6 +1,9 @@
 MAP_LIMITS = 2000 #2000X2000
 DELAI = 0.05 #secondes
+SCREEN_TYPE = 43
 SCREEN_SIZE = 640 # fenetre en 640X640
+SCREEN_LENGHT = 0
+SCREEN_HEIGHT = 0
 
 refreshList = []
 hitList = []
@@ -10,6 +13,8 @@ refreshIconlist = []
 
 img_fond = 'images/img_fond.png'
 img_fondNoir = 'images/img_fondNoir.png'
+img_overlay43 = 'images/img_overlay43.png'
+img_overlay169 = 'images/img_overlay169.png'
 
 img_iconEnnemy = 'images/img_iconEnnemy.png'
 img_iconFriend = 'images/img_iconFriend.png'

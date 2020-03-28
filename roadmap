@@ -19,8 +19,9 @@ ROADMAP Florian :
     faire minimap
                 -points sur les cotés de l'écran - Fait
 
-rework la traj des missiles pour le Player
-fullscreen
+    fullscreen,overlay - Fait mais peut etre trop petit
+
+    rework la traj du Player
 
     problème : missilelist ne désemplit pas - Resolu
                 IA esquive dans mauvais sens - Resolu

@@ -10,8 +10,20 @@ import variables as var  # importion des variables globales
 
 pygame.init()
 pygame.font.init()
-#fenetre = pygame.display.set_mode((var.SCREEN_SIZE,var.SCREEN_SIZE),pygame.FULLSCREEN)
-fenetre = pygame.display.set_mode((var.SCREEN_SIZE,var.SCREEN_SIZE))
+infoObject = pygame.display.Info()
+fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
+
+if var.SCREEN_TYPE == 43:
+    var.SCREEN_LENGHT = 1280
+    var.SCREEN_HEIGHT = 1024
+    overlay = classes.Fond(var.img_overlay43)
+
+if var.SCREEN_TYPE == 169:
+    var.SCREEN_LENGHT = 1920
+    var.SCREEN_HEIGHT = 1080
+    overlay = classes.Fond(var.img_overlay169)
+
+
 fond = classes.Fond(var.img_fond)
 fondNoir = classes.Fond(var.img_fondNoir)
 
@@ -90,24 +102,29 @@ while affFenetre:
 
 
     #####fonds, avions,missiles
+    
     try:
-        fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2,-var.MAP_LIMITS/2))
-        fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect))
+        fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2+320,-var.MAP_LIMITS/2+192))
+        fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect,320,192))
+        
 
         for objet in var.refreshList:
-            fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect))
+            fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect,320,192))
     
     except IndexError:
 
         fenetre.blit(fondNoir.image,(fondNoir.rect[0]-var.MAP_LIMITS/2,fondNoir.rect[0]-var.MAP_LIMITS/2))
         fenetre.blit(fond.image,fond.rect)
 
+
         for objet in var.refreshList:
             fenetre.blit(objet.image,objet.rect)
+        
     
     #####HUD
+
     for notif in var.refreshNotifList:
-        fenetre.blit(notif.corps,(50,320))
+        fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-290,var.SCREEN_HEIGHT/2-300))
     
     try:
         for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
@@ -123,9 +140,13 @@ while affFenetre:
                     classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")#creation de l'icone
     except IndexError:pass
 
+    
     for icon in var.refreshIconlist:
         fenetre.blit(icon.corps,(icon.x,icon.y))#on affiche les icones
         icon.delete()#puis on les delete
+    
+    fenetre.blit(overlay.image,overlay.rect)
+    
 
     #Rafraichissement
     pygame.display.flip()

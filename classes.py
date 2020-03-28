@@ -185,29 +185,35 @@ class PlayerPlane(Plane):
         for notif in self.notifList:
             if notif.timeAlive > 60:
                 self.delete()
-        
         self.timeAlive += 1
         self.goTo()
     
     def goTo(self):
         self.mouse = pygame.mouse.get_pos()
-        self.xVector = self.vectorTo(self.xVector,self.mouse[0])
-        self.yVector = self.vectorTo(self.yVector,self.mouse[1])
+        self.xVector = self.vectorToX(self.xVector,self.mouse[0])
+        self.yVector = self.vectorToY(self.yVector,self.mouse[1])
         
         self.x += self.xVector
         self.y += self.yVector
 
-    def vectorTo(self,vector,mouse):
-        distanceToDest = mouse - var.SCREEN_SIZE/2
+    def vectorToX(self,vector,mouse):
+        distanceToDest = mouse - var.SCREEN_LENGHT/2
         if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
             vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),self.MAXSPEED,True)
         else:
             vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-self.MAXSPEED,False)
-        
+        return vector
+    
+    def vectorToY(self,vector,mouse):
+        distanceToDest = mouse - var.SCREEN_HEIGHT/2
+        if (vector + distanceToDest)*abs((distanceToDest/1.5)) > 0:
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),self.MAXSPEED,True)
+        else:
+            vector = utility.plafonne((vector + distanceToDest)*abs((distanceToDest/1.5)),-self.MAXSPEED,False)
         return vector
     
     def turn(self):
-        self.angle = (utility.getBearing((var.SCREEN_SIZE/2,var.SCREEN_SIZE/2),pygame.mouse.get_pos())+90)%360 
+        self.angle = (utility.getBearing((var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2),pygame.mouse.get_pos())+90)%360 
         #calcul de l'angle de l'ojet par rapport à sa dest
         utility.rotate(self,self.angle)# on le tourne de cet angle
 
@@ -386,12 +392,12 @@ class Camera():
 
 class Fond():
     def __init__(self,image):
-        self.image = pygame.image.load(image).convert()
+        self.image = pygame.image.load(image).convert_alpha()
         self.rect = self.image.get_rect()
 
 class Notif():
     def __init__(self,texte,temps,creator):
-        self.font = pygame.font.Font('18 ARMY.otf', 25)
+        self.font = pygame.font.Font('18 ARMY.otf', 30)
         self.corps = self.font.render(texte, True, (255,0,0))
         self.texte = texte
         self.timeAlive = 0
@@ -430,10 +436,10 @@ class NotifOut(Notif):
 class Icon():
     def __init__(self,xy,iconType):
         x,y = xy
-        self.x = utility.plafonne(x,var.SCREEN_SIZE,True)
-        self.x = utility.plafonne(self.x,0,False)-10
-        self.y = utility.plafonne(y,var.SCREEN_SIZE,True)
-        self.y = utility.plafonne(self.y,0,False)-10
+        self.x = utility.plafonne(x,var.SCREEN_SIZE-10,True)
+        self.x = utility.plafonne(self.x,30,False)+300
+        self.y = utility.plafonne(y,var.SCREEN_SIZE-10,True)
+        self.y = utility.plafonne(self.y,30,False)+172
 
         var.refreshIconlist.append(self)
         if iconType == "ennemy":
