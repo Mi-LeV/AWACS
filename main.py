@@ -32,12 +32,13 @@ pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
 affFenetre = True
 
 #musique de fond
-pygame.mixer.music.load(var.music_hell_march)
-pygame.mixer.music.load(var.music_face_the_enemy2)
-pygame.mixer.music.load(var.music_face_the_enemy1)
-pygame.mixer.music.load(var.music_bigfoot)
-pygame.mixer.music.load(var.music_smash)
-pygame.mixer.music.play()
+if var.MUSIC:
+    pygame.mixer.music.load(var.music_hell_march)
+    pygame.mixer.music.load(var.music_face_the_enemy2)
+    pygame.mixer.music.load(var.music_face_the_enemy1)
+    pygame.mixer.music.load(var.music_bigfoot)
+    pygame.mixer.music.load(var.music_smash)
+    pygame.mixer.music.play()
 
 ##debut des evenements
 Player = classes.PlayerPlane(150,200,True)
@@ -104,12 +105,12 @@ while affFenetre:
     #####fonds, avions,missiles
     
     try:
-        fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2+320,-var.MAP_LIMITS/2+192))
-        fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect,320,192))
+        fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2+var.XCAM_MODIF,-var.MAP_LIMITS/2+var.YCAM_MODIF))
+        fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect,var.XCAM_MODIF,var.YCAM_MODIF))
         
 
         for objet in var.refreshList:
-            fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect,320,192))
+            fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect,var.XCAM_MODIF,var.YCAM_MODIF))
     
     except IndexError:
 
@@ -122,10 +123,14 @@ while affFenetre:
         
     
     #####HUD
-
-    for notif in var.refreshNotifList:
-        fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-290,var.SCREEN_HEIGHT/2-300))
     
+    for icon in var.refreshIconlist:
+        fenetre.blit(icon.corps,(icon.x,icon.y))#on affiche les icones
+        icon.delete()#puis on les delete
+    
+    
+    fenetre.blit(overlay.image,overlay.rect)#image du HUD
+
     try:
         for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
             if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
@@ -141,11 +146,10 @@ while affFenetre:
     except IndexError:pass
 
     
-    for icon in var.refreshIconlist:
-        fenetre.blit(icon.corps,(icon.x,icon.y))#on affiche les icones
-        icon.delete()#puis on les delete
     
-    fenetre.blit(overlay.image,overlay.rect)
+    for notif in var.refreshNotifList:#affichage des notifs
+        fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-480,var.SCREEN_HEIGHT/2-280))
+    
     
 
     #Rafraichissement

@@ -21,6 +21,7 @@ ROADMAP Florian :
 
     fullscreen,overlay - Fait mais peut etre trop petit
 
+    compléter HUD : reloadtime, nb d'amis, nb d'ennemis
     rework la traj du Player
 
     problème : missilelist ne désemplit pas - Resolu
@@ -28,5 +29,5 @@ ROADMAP Florian :
                 contrôle souris buggé - Resolu
                 notif ne se voit pas - Resolu
                 
-    
+                
 

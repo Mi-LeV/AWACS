@@ -437,9 +437,9 @@ class Icon():
     def __init__(self,xy,iconType):
         x,y = xy
         self.x = utility.plafonne(x,var.SCREEN_SIZE-10,True)
-        self.x = utility.plafonne(self.x,30,False)+300
+        self.x = utility.plafonne(self.x,5,False)+var.XCAM_MODIF-16#le 0,5, -16 sont des micro-réglages, à modif en f de l'ecran
         self.y = utility.plafonne(y,var.SCREEN_SIZE-10,True)
-        self.y = utility.plafonne(self.y,30,False)+172
+        self.y = utility.plafonne(self.y,5,False)+var.YCAM_MODIF-5#le 0,5, -5 sont des micro-réglages, à modif en f de l'ecran
 
         var.refreshIconlist.append(self)
         if iconType == "ennemy":
