@@ -27,6 +27,7 @@ if var.SCREEN_TYPE == 169:
 fond = classes.Fond(var.img_fond)
 fondNoir = classes.Fond(var.img_fondNoir)
 
+
 pygame.display.set_caption("AWACS")
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
 affFenetre = True
@@ -101,6 +102,20 @@ while affFenetre:
         var.playerList[0].camera.update(var.playerList[0])#on update la position de la caméra
     except IndexError:pass
 
+#calcul des icones à afficher
+    try:
+        for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
+            if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
+                newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
+                if newIconList:
+                    classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")#creation de l'icone
+            
+            #test si un ami est hors de vue du joueur
+            if type(objet) != classes.Missile and objet.friendly == var.playerList[0].friendly:
+                newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
+                if newIconList:
+                    classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")#creation de l'icone
+    except IndexError:pass
 
     #####fonds, avions,missiles
     
@@ -129,24 +144,10 @@ while affFenetre:
         icon.delete()#puis on les delete
     
     
-    fenetre.blit(overlay.image,overlay.rect)#image du HUD
+    fenetre.blit(overlay.image,overlay.rect)#affichage image du HUD
 
-    try:
-        for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
-            if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
-                newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
-                if newIconList:
-                    classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")#creation de l'icone
-            
-            #test si un ami est hors de vue du joueur
-            if type(objet) != classes.Missile and objet.friendly == var.playerList[0].friendly:
-                newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
-                if newIconList:
-                    classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")#creation de l'icone
-    except IndexError:pass
 
-    
-    
+
     for notif in var.refreshNotifList:#affichage des notifs
         fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-480,var.SCREEN_HEIGHT/2-280))
     
