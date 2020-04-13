@@ -7,30 +7,18 @@ import classes  # importation des classes
 import variables as var  # importion des variables globales
 
 ##creation de la fenetre
-
 pygame.init()
 pygame.font.init()
 infoObject = pygame.display.Info()
 fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
 
-if var.SCREEN_TYPE == 43:
-    var.SCREEN_LENGHT = 1280
-    var.SCREEN_HEIGHT = 1024
-    overlay = classes.Fond(var.img_overlay43)
-
-if var.SCREEN_TYPE == 169:
-    var.SCREEN_LENGHT = 1920
-    var.SCREEN_HEIGHT = 1080
-    overlay = classes.Fond(var.img_overlay169)
 
 
-fond = classes.Fond(var.img_fond)
-fondNoir = classes.Fond(var.img_fondNoir)
 
 
 pygame.display.set_caption("AWACS")
 pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
-affFenetre = True
+
 
 #musique de fond
 if var.MUSIC:
@@ -41,17 +29,59 @@ if var.MUSIC:
     pygame.mixer.music.load(var.music_smash)
     pygame.mixer.music.play()
 
-##debut des evenements
-Player = classes.PlayerPlane(150,200,True)
 
-while affFenetre:
-    clock = pygame.time.Clock()
-    clock.tick(60)
+
+clock = pygame.time.Clock()
+clock.tick(60)
+
+if var.SCREEN_TYPE == 43:
+    var.SCREEN_LENGHT = 1280
+    var.SCREEN_HEIGHT = 1024
+    overlay = classes.Fond(var.img_overlay43)
+    menu = classes.Fond(var.img_menu43)
+
+if var.SCREEN_TYPE == 169:
+    var.SCREEN_LENGHT = 1920
+    var.SCREEN_HEIGHT = 1080
+    overlay = classes.Fond(var.img_overlay169)
+    menu = classes.Fond(var.img_menu169)
+
+var.menuLoop = True
+var.gameLoop = True
+
+button1 = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-100),'var.menuLoop=False\nvar.gameLoop=True\n')
+while var.menuLoop:
     for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_s):#si on appuie sur la croix de la fenetre 
-            affFenetre = False      #On arrête la boucle
+            menuLoop = False      #On arrête la boucle
+        if event.type ==MOUSEBUTTONUP and event.button == 1:
+            for bouton in var.buttonList:
+                bouton.checkclic(pygame.mouse.get_pos())
         
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:##clic droit
+    for objet in var.refreshList:
+        objet.tick()
+    fenetre.blit(menu.image,menu.rect)
+    for bouton in var.buttonList:
+        if bouton.aff:
+            fenetre.blit(bouton.image,bouton.rect)
+    print("menuloop")
+    pygame.display.flip()
+
+##debut des evenements
+Player = classes.PlayerPlane(150,200,True)
+var.refreshList = []
+var.buttonList = []
+fond = classes.Fond(var.img_fond)
+fondNoir = classes.Fond(var.img_fondNoir)
+
+
+
+while var.gameLoop:
+    for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
+        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_s):#si on appuie sur la croix de la fenetre 
+            var.gameLoop = False      #On arrête la boucle
+        
+        if event.type == MOUSEBUTTONDOWN and event.button == 1:##clic gauche
             try:
                 var.playerList[0].shoot()#le 1er player de playerlist tire si la liste est pas vide
             except IndexError:pass
@@ -76,6 +106,7 @@ while affFenetre:
         #on remet les co de l'objet à son centre(évite bug de rotate)
     
     var.hitList = []
+    
 
     for objet in var.refreshList:
         for objet2 in var.refreshList:#boucle de test hitbox
@@ -102,7 +133,7 @@ while affFenetre:
         var.playerList[0].camera.update(var.playerList[0])#on update la position de la caméra
     except IndexError:pass
 
-#calcul des icones à afficher
+    #calcul des icones à afficher
     try:
         for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
             if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
@@ -155,5 +186,4 @@ while affFenetre:
 
     #Rafraichissement
     pygame.display.flip()
-
 pygame.quit()

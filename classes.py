@@ -452,3 +452,24 @@ class Icon():
     def delete(self):
         var.refreshIconlist.remove(self)
         del self
+
+class Button():
+    def __init__(self,image,coords,code):
+        self.image = pygame.image.load(image).convert_alpha()
+        #self.rect = self.image.get_rect(topleft=coords)
+        self.rect = self.image.get_rect(center=coords)
+        self.codeAExec = compile(code, 'main', 'exec')
+        self.aff = False
+        var.refreshList.append(self)
+        var.buttonList.append(self)
+    
+    def tick(self):
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            self.aff = True
+        else:
+            self.aff = False
+    
+    def checkclic(self,coords):
+        if self.rect.collidepoint(coords):
+            exec(self.codeAExec)
+

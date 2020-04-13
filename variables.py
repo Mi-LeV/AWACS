@@ -13,11 +13,15 @@ hitList = []
 playerList = []
 refreshNotifList = []
 refreshIconlist = []
+buttonList = []
 
 img_fond = 'images/img_fond.png'
-img_fondNoir = 'images/img_fondNoir.png'
+img_fondNoir = 'images/img_fondNoir.jpg'
 img_overlay43 = 'images/img_overlay43.png'
 img_overlay169 = 'images/img_overlay169.png'
+img_menu169 = 'images/img_titre169.png'
+img_menu43 = 'images/img_titre43.png'
+img_highlbutt = 'images/img_highlightbutt.png'
 
 img_iconEnnemy = 'images/img_iconEnnemy.png'
 img_iconFriend = 'images/img_iconFriend.png'
