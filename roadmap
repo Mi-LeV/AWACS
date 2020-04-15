@@ -19,7 +19,8 @@ ROADMAP Florian :
     faire minimap
                 -points sur les cotés de l'écran - Fait
 
-    fullscreen,overlay - Fait mais peut etre trop petit
+    fullscreen,overlay - Fait mais peut etre trop petit - agrandit
+    faire un menu avec : jeu, options(169,43,volume), exit
 
     compléter HUD : reloadtime, nb d'amis, nb d'ennemis
     rework la traj du Player
@@ -28,6 +29,6 @@ ROADMAP Florian :
                 IA esquive dans mauvais sens - Resolu
                 contrôle souris buggé - Resolu
                 notif ne se voit pas - Resolu
-                
+                player invisible, intouchable et ne bouge pas
                 
 

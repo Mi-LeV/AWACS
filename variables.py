@@ -6,7 +6,7 @@ XCAM_MODIF = 250
 YCAM_MODIF = 110
 SCREEN_LENGHT = 0
 SCREEN_HEIGHT = 0
-MUSIC = True
+MUSIC = False
 
 refreshList = []
 hitList = []

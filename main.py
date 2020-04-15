@@ -44,6 +44,7 @@ var.menuLoop = True
 var.gameLoop = False
 
 button1 = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-100),'var.menuLoop=False\nvar.gameLoop=True\n')
+button2 = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'var.menuLoop=False')
 if var.MUSIC:
     pygame.mixer.init()
     pygame.mixer.music.load(var.music_top_gun)
@@ -75,11 +76,8 @@ fond = classes.Fond(var.img_fond)
 fondNoir = classes.Fond(var.img_fondNoir)
 
 
-
-while var.gameLoop:
-
-    if var.MUSIC:
-        pygame.mixer.quit()
+if var.MUSIC:
+        pygame.mixer.stop()
         pygame.mixer.init()
         pygame.mixer.music.load(var.music_hell_march)
         pygame.mixer.music.load(var.music_face_the_enemy2)
@@ -87,6 +85,8 @@ while var.gameLoop:
         pygame.mixer.music.load(var.music_bigfoot)
         pygame.mixer.music.load(var.music_smash)
         pygame.mixer.music.play()
+
+while var.gameLoop:
 
     for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_s):#si on appuie sur la croix de la fenetre 
