@@ -6,7 +6,7 @@ XCAM_MODIF = 250
 YCAM_MODIF = 110
 SCREEN_LENGHT = 0
 SCREEN_HEIGHT = 0
-MUSIC = False
+MUSIC = True
 
 refreshList = []
 hitList = []
@@ -40,3 +40,4 @@ music_bigfoot = 'music/bigfoot.ogg'
 music_hell_march = 'music/hell march.ogg'
 music_face_the_enemy1 = 'music/face the enemy 1.ogg'
 music_face_the_enemy2 = 'music/face the enemy 2.ogg'
+music_top_gun = 'music/top_gun_instru.ogg'
