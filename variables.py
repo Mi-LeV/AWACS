@@ -6,8 +6,11 @@ XCAM_MODIF = 250
 YCAM_MODIF = 110
 SCREEN_LENGHT = 0
 SCREEN_HEIGHT = 0
-MUSIC = False
+MUSIC = True
+FULLSCREEN = True
 
+menuLoop = False
+gameLoop = True
 refreshList = []
 hitList = []
 playerList = []

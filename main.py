@@ -10,7 +10,10 @@ import variables as var  # importion des variables globales
 pygame.init()
 pygame.font.init()
 infoObject = pygame.display.Info()
-fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
+if var.FULLSCREEN:
+    fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
+else:
+    fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 
 
 
@@ -40,8 +43,7 @@ if var.SCREEN_TYPE == 169:
     overlay = classes.Fond(var.img_overlay169)
     menu = classes.Fond(var.img_menu169)
 
-var.menuLoop = True
-var.gameLoop = False
+
 
 button1 = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-100),'var.menuLoop=False\nvar.gameLoop=True\n')
 button2 = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'var.menuLoop=False')
@@ -53,7 +55,7 @@ if var.MUSIC:
 while var.menuLoop:
 
     for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
-        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_s):#si on appuie sur la croix de la fenetre 
+        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):#si on appuie sur la croix de la fenetre ou echap
             menuLoop = False      #On arrête la boucle
         if event.type ==MOUSEBUTTONUP and event.button == 1:
             for bouton in var.buttonList:
@@ -69,9 +71,9 @@ while var.menuLoop:
     pygame.display.flip()
 
 ##debut des evenements
-Player = classes.PlayerPlane(150,200,True)
 var.refreshList = []
 var.buttonList = []
+Player = classes.PlayerPlane(150,200,True)
 fond = classes.Fond(var.img_fond)
 fondNoir = classes.Fond(var.img_fondNoir)
 
@@ -89,7 +91,7 @@ if var.MUSIC:
 while var.gameLoop:
 
     for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
-        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_s):#si on appuie sur la croix de la fenetre 
+        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):#si on appuie sur la croix de la fenetre 
             var.gameLoop = False      #On arrête la boucle
         
         if event.type == MOUSEBUTTONDOWN and event.button == 1:##clic gauche
