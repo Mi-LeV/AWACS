@@ -479,7 +479,6 @@ class Icon():
 class Button():
     def __init__(self,image,coords,code):
         self.image = pygame.image.load(image).convert_alpha()
-        #self.rect = self.image.get_rect(topleft=coords)
         self.rect = self.image.get_rect(center=coords)
         self.codeAExec = compile(code, 'main', 'exec')
         self.aff = False
@@ -508,5 +507,31 @@ class ButtonReso(Button):
     
     def checkclic(self, coords):
         super().checkclic(coords)
+
+class Cursor(Button):
+    def __init__(self,image,image2,coords,code):
+        self.image = pygame.image.load(image).convert_alpha()
+        self.image_c = pygame.image.load(image2).convert_alpha()
+        self.rect = self.image.get_rect(center=coords)
+        self.rect_c = self.image_c.get_rect(center=coords)
+        self.codeAExec = compile(code, 'main', 'exec')
+        self.aff = True
+        var.refreshList.append(self)
+        var.buttonList.append(self)
+    
+    def tick(self):
+        pass
+    def checkclic(self, coords):
+        if self.rect.collidepoint(coords):
+            nextX = coords[0]
+            
+            if nextX < self.rect.left+self.rect_c[2]/2:
+                nextX = self.rect.left+self.rect_c[2]/2
+            
+            if nextX > self.rect.right-self.rect_c[2]/2:
+                nextX =  self.rect.right-self.rect_c[2]/2
+            
+            self.rect_c.center = (nextX,self.rect_c.center[1])
+            exec(self.codeAExec)
 
 

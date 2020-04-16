@@ -6,14 +6,16 @@ XCAM_MODIF = 250
 YCAM_MODIF = 110
 SCREEN_LENGHT = 0
 SCREEN_HEIGHT = 0
-MUSIC = False
-FULLSCREEN = True
+MUSIC = True
+FULLSCREEN = False
 
 globalLoop = True
 menuLoop = True
 gameLoop = False
 optionsLoop = False
 refreshList = []
+volume = 50
+playlist = ""
 hitList = []
 playerList = []
 refreshNotifList = []
@@ -28,6 +30,8 @@ img_menu169 = 'images/img_titre169.png'
 img_menu43 = 'images/img_titre43.png'
 
 img_highlbutt = 'images/img_highlightbutt.png'
+img_cursor = 'images/img_cursor.png'
+img_cursor_c = 'images/img_cursor_corps.png'
 
 img_iconEnnemy = 'images/img_iconEnnemy.png'
 img_iconFriend = 'images/img_iconFriend.png'

@@ -46,10 +46,12 @@ while var.globalLoop:
         butOptions = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.menuLoop=False\nvar.optionsLoop = True')
         butExit = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'var.menuLoop=False\nvar.globalLoop=False')
         
-        if var.MUSIC:
+        if var.MUSIC and not(var.playlist == "menu_music"):
+            pygame.mixer.music.set_volume(var.volume/100)
+            var.playlist = "menu_music"
             pygame.mixer.init()
             pygame.mixer.music.load(var.music_top_gun)
-            pygame.mixer.music.play()
+            pygame.mixer.music.play(-1)
 
     while var.menuLoop:
 
@@ -72,26 +74,33 @@ while var.globalLoop:
     if var.optionsLoop:
         var.refreshList = []
         var.buttonList = []
+        
+        cursVolume = classes.Cursor(var.img_cursor,var.img_cursor_c,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.volume = round((self.rect_c.left/self.rect.left-1)*54.4)\npygame.mixer.music.set_volume(var.volume/100)')
         butReso = classes.ButtonReso(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-100),"Definition : ",'utility.resoSwitch()')
         butMenu = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'var.optionsLoop=False\nvar.menuLoop=True')
-
     while var.optionsLoop:
         for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):#si on appuie sur la croix de la fenetre ou echap
+            if event.type == QUIT:#si on appuie sur la croix de la fenetre 
                 var.optionsLoop = False      #On arrête la boucle
-                var.menuLoop = True
+                var.globalLoop = False
             if event.type ==MOUSEBUTTONUP and event.button == 1:
                 for bouton in var.buttonList:
                     bouton.checkclic(pygame.mouse.get_pos())
-            
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
+                var.optionsLoop = False      #On arrête la boucle
+                var.menuLoop = True
         for objet in var.refreshList:
             objet.tick()
         fenetre.blit(menu.image,menu.rect)
+
         for bouton in var.buttonList:
+
             if bouton.aff:
                 fenetre.blit(bouton.image,bouton.rect)
             if type(bouton) == classes.ButtonReso:
                 fenetre.blit(bouton.textAff,(bouton.rect[0]-50,bouton.rect[1]+100))
+            if type(bouton) == classes.Cursor:
+                fenetre.blit(bouton.image_c,bouton.rect_c)
         pygame.display.flip()
 
     ##debut des evenements gameloop
@@ -105,20 +114,24 @@ while var.globalLoop:
         Player = classes.PlayerPlane(150,200,True)
         fond = classes.Fond(var.img_fond)
         fondNoir = classes.Fond(var.img_fondNoir)
-        if var.MUSIC:
+        if var.MUSIC and not(var.playlist == "game_music"):
+                pygame.mixer.music.set_volume(var.volume/100)
+                var.playlist = "game_music"
                 pygame.mixer.stop()
-                pygame.mixer.init()
                 pygame.mixer.music.load(var.music_hell_march)
                 pygame.mixer.music.load(var.music_face_the_enemy2)
                 pygame.mixer.music.load(var.music_face_the_enemy1)
                 pygame.mixer.music.load(var.music_bigfoot)
                 pygame.mixer.music.load(var.music_smash)
-                pygame.mixer.music.play()
+                pygame.mixer.music.play(-1)
 
     while var.gameLoop:
 
         for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):#si on appuie sur la croix de la fenetre 
+            if event.type == QUIT:#si on appuie sur la croix de la fenetre 
+                var.gameLoop = False      #On arrête la boucle
+                var.globalLoop = False
+            if event.type == KEYDOWN and event.key == K_ESCAPE:
                 var.gameLoop = False      #On arrête la boucle
                 var.menuLoop = True
             
