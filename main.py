@@ -13,7 +13,7 @@ infoObject = pygame.display.Info()
 if var.FULLSCREEN:
     fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
 else:
-    fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
+    fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.RESIZABLE)
 
 
 
