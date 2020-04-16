@@ -60,7 +60,30 @@ class utility:
     def spawnGroup(x,y,friendly,number):
         for i in range(number):
             IaPlane(x+randrange(-100,100,30),y+randrange(-100,100,30),friendly)
+    @staticmethod
+    def screenReso(format):
+        if var.SCREEN_TYPE == 43:
+            var.SCREEN_LENGHT = 1280
+            var.SCREEN_HEIGHT = 1024
+            return 43
 
+        if var.SCREEN_TYPE == 169:
+            var.SCREEN_LENGHT = 1920
+            var.SCREEN_HEIGHT = 1080
+            return 169
+    @staticmethod
+    def resoSwitch():
+        if var.SCREEN_TYPE == 43:
+            var.SCREEN_TYPE = 169
+            var.SCREEN_LENGHT = 1920
+            var.SCREEN_HEIGHT = 1080
+            return 169
+            
+        if var.SCREEN_TYPE == 169:
+            var.SCREEN_TYPE = 43
+            var.SCREEN_LENGHT = 1280
+            var.SCREEN_HEIGHT = 1024
+            return 43
 
 
 class Plane(pygame.sprite.Sprite):
@@ -472,4 +495,18 @@ class Button():
     def checkclic(self,coords):
         if self.rect.collidepoint(coords):
             exec(self.codeAExec)
+
+class ButtonReso(Button):
+    def __init__(self, image, coords,text, code):
+        super().__init__(image, coords, code)
+        self.text = text
+        self.font = pygame.font.Font('18 ARMY.otf', 40)
+        self.textAff = self.font.render(self.text + str(var.SCREEN_LENGHT)+"x"+str(var.SCREEN_HEIGHT), True, (0,255,0))
+    def tick(self):
+        super().tick()
+        self.textAff = self.font.render(self.text + str(var.SCREEN_LENGHT)+"x"+str(var.SCREEN_HEIGHT), True, (0,255,0))
+    
+    def checkclic(self, coords):
+        super().checkclic(coords)
+
 

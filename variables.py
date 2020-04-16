@@ -6,11 +6,13 @@ XCAM_MODIF = 250
 YCAM_MODIF = 110
 SCREEN_LENGHT = 0
 SCREEN_HEIGHT = 0
-MUSIC = True
+MUSIC = False
 FULLSCREEN = True
 
-menuLoop = False
-gameLoop = True
+globalLoop = True
+menuLoop = True
+gameLoop = False
+optionsLoop = False
 refreshList = []
 hitList = []
 playerList = []
@@ -24,6 +26,7 @@ img_overlay43 = 'images/img_overlay43.png'
 img_overlay169 = 'images/img_overlay169.png'
 img_menu169 = 'images/img_titre169.png'
 img_menu43 = 'images/img_titre43.png'
+
 img_highlbutt = 'images/img_highlightbutt.png'
 
 img_iconEnnemy = 'images/img_iconEnnemy.png'
