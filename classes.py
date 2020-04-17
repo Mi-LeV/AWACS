@@ -84,6 +84,14 @@ class utility:
             var.SCREEN_LENGHT = 1280
             var.SCREEN_HEIGHT = 1024
             return 43
+    @staticmethod
+    def fullscreenSwitch(fenetre):
+        if var.fullscreen:
+            fenetre = pygame.display.set_mode((var.SCREEN_LENGHT, var.SCREEN_HEIGHT),pygame.RESIZABLE)
+            var.fullscreen = False
+        else:
+            fenetre = pygame.display.set_mode((var.SCREEN_LENGHT, var.SCREEN_HEIGHT),pygame.FULLSCREEN)
+            var.fullscreen = True
 
 
 class Plane(pygame.sprite.Sprite):

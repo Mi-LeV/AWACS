@@ -11,9 +11,11 @@ pygame.init()
 pygame.font.init()
 infoObject = pygame.display.Info()
 if var.FULLSCREEN:
-    fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
+    var.fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
+    var.fullscreen = True
 else:
-    fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.RESIZABLE)
+    var.fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.RESIZABLE)
+    var.fullscreen = False
 
 
 
@@ -32,7 +34,6 @@ clock = pygame.time.Clock()
 clock.tick(60)
 
 classes.utility.screenReso(var.SCREEN_TYPE)
-
 while var.globalLoop:
     if var.menuLoop:
         var.refreshList = []
@@ -65,19 +66,24 @@ while var.globalLoop:
             
         for objet in var.refreshList:
             objet.tick()
-        fenetre.blit(menu.image,menu.rect)
+        var.fenetre.blit(menu.image,menu.rect)
         for bouton in var.buttonList:
             if bouton.aff:
-                fenetre.blit(bouton.image,bouton.rect)
+                var.fenetre.blit(bouton.image,bouton.rect)
         pygame.display.flip()
 
     if var.optionsLoop:
         var.refreshList = []
         var.buttonList = []
+        if var.SCREEN_TYPE==169:
+            options = classes.Fond(var.img_options169)
+        else:
+            options = classes.Fond(var.img_options43)
         
         cursVolume = classes.Cursor(var.img_cursor,var.img_cursor_c,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.volume = round((self.rect_c.left/self.rect.left-1)*54.4)\npygame.mixer.music.set_volume(var.volume/100)')
-        butReso = classes.ButtonReso(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-100),"Definition : ",'utility.resoSwitch()')
-        butMenu = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'var.optionsLoop=False\nvar.menuLoop=True')
+        butReso = classes.ButtonReso(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-200),"Definition : ",'utility.resoSwitch()')
+        butMenu = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+300),'var.optionsLoop=False\nvar.menuLoop=True')
+        butFullscreen = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'utility.fullscreenSwitch(var.fenetre)')
     while var.optionsLoop:
         for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
             if event.type == QUIT:#si on appuie sur la croix de la fenetre 
@@ -91,16 +97,16 @@ while var.globalLoop:
                 var.menuLoop = True
         for objet in var.refreshList:
             objet.tick()
-        fenetre.blit(menu.image,menu.rect)
+        var.fenetre.blit(options.image,options.rect)
 
         for bouton in var.buttonList:
 
             if bouton.aff:
-                fenetre.blit(bouton.image,bouton.rect)
+                var.fenetre.blit(bouton.image,bouton.rect)
             if type(bouton) == classes.ButtonReso:
-                fenetre.blit(bouton.textAff,(bouton.rect[0]-50,bouton.rect[1]+100))
+                var.fenetre.blit(bouton.textAff,(bouton.rect[0]-50,bouton.rect[1]+150))
             if type(bouton) == classes.Cursor:
-                fenetre.blit(bouton.image_c,bouton.rect_c)
+                var.fenetre.blit(bouton.image_c,bouton.rect_c)
         pygame.display.flip()
 
     ##debut des evenements gameloop
@@ -205,36 +211,36 @@ while var.globalLoop:
         #####fonds, avions,missiles
         
         try:
-            fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2+var.XCAM_MODIF,-var.MAP_LIMITS/2+var.YCAM_MODIF))
-            fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect,var.XCAM_MODIF,var.YCAM_MODIF))
+            var.fenetre.blit(fondNoir.image,var.playerList[0].camera.apply(fondNoir.rect,-var.MAP_LIMITS/2+var.XCAM_MODIF,-var.MAP_LIMITS/2+var.YCAM_MODIF))
+            var.fenetre.blit(fond.image,var.playerList[0].camera.apply(fond.rect,var.XCAM_MODIF,var.YCAM_MODIF))
             
 
             for objet in var.refreshList:
-                fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect,var.XCAM_MODIF,var.YCAM_MODIF))
+                var.fenetre.blit(objet.image,var.playerList[0].camera.apply(objet.rect,var.XCAM_MODIF,var.YCAM_MODIF))
         
         except IndexError:
 
-            fenetre.blit(fondNoir.image,(fondNoir.rect[0]-var.MAP_LIMITS/2,fondNoir.rect[0]-var.MAP_LIMITS/2))
-            fenetre.blit(fond.image,fond.rect)
+            var.fenetre.blit(fondNoir.image,(fondNoir.rect[0]-var.MAP_LIMITS/2,fondNoir.rect[0]-var.MAP_LIMITS/2))
+            var.fenetre.blit(fond.image,fond.rect)
 
 
             for objet in var.refreshList:
-                fenetre.blit(objet.image,objet.rect)
+                var.fenetre.blit(objet.image,objet.rect)
             
         
         #####HUD
         
         for icon in var.refreshIconlist:
-            fenetre.blit(icon.corps,(icon.x,icon.y))#on affiche les icones
+            var.fenetre.blit(icon.corps,(icon.x,icon.y))#on affiche les icones
             icon.delete()#puis on les delete
         
         
-        fenetre.blit(overlay.image,overlay.rect)#affichage image du HUD
+        var.fenetre.blit(overlay.image,overlay.rect)#affichage image du HUD
 
 
 
         for notif in var.refreshNotifList:#affichage des notifs
-            fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-480,var.SCREEN_HEIGHT/2-280))
+            var.fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-480,var.SCREEN_HEIGHT/2-280))
         
         
 
