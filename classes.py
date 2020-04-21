@@ -149,7 +149,7 @@ class Plane(pygame.sprite.Sprite):
         xDistanceToDest -= self.xVector
         yDistanceToDest -= self.yVector
 
-    def testOutOfMap(self):
+    def testOutOfMap(self):# la map doit etre un carre
         if self.x < 0 or self.x > var.MAP_LIMITS:
             return True
         if self.y < 0 or self.y > var.MAP_LIMITS:
@@ -542,4 +542,4 @@ class Cursor(Button):
             self.rect_c.center = (nextX,self.rect_c.center[1])
             exec(self.codeAExec)
 
-
+import r
