@@ -35,6 +35,7 @@ img_options169 = 'images/img_options169.png'
 
 
 img_highlbutt = 'images/img_highlightbutt.png'
+img_highlbutt_s = 'images/img_highlightbutt_s.png'
 img_cursor = 'images/img_cursor.png'
 img_cursor_c = 'images/img_cursor_corps.png'
 

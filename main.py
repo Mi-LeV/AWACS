@@ -82,7 +82,7 @@ while var.globalLoop:
         
         cursVolume = classes.Cursor(var.img_cursor,var.img_cursor_c,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.volume = round((self.rect_c.left/self.rect.left-1)*54.4)\npygame.mixer.music.set_volume(var.volume/100)')
         butReso = classes.ButtonReso(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-200),"Definition : ",'utility.resoSwitch()')
-        butMenu = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+300),'var.optionsLoop=False\nvar.menuLoop=True')
+        butMenu = classes.Button(var.img_highlbutt_s,(var.SCREEN_LENGHT/2-550,var.SCREEN_HEIGHT/2-420),'var.optionsLoop=False\nvar.menuLoop=True')
         butFullscreen = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'utility.fullscreenSwitch(var.fenetre)')
     while var.optionsLoop:
         for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
