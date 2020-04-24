@@ -93,7 +93,6 @@ class utility:
             fenetre = pygame.display.set_mode((var.SCREEN_LENGHT, var.SCREEN_HEIGHT),pygame.FULLSCREEN)
             var.fullscreen = True
 
-
 class Plane(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self) #call Sprite initializer
@@ -331,7 +330,6 @@ class IaPlane(Plane):
         else:
             self.agro = None
             return False
-    
 
 class Missile():
     def __init__(self,creator):
@@ -419,7 +417,6 @@ class Camera():
     def update(self, target):
         self.state = pygame.Rect(target.x-var.SCREEN_SIZE/2, target.y-var.SCREEN_SIZE/2, 
         target.x + self.WIDTH-var.SCREEN_SIZE/2, target.y + self.HEIGHT-var.SCREEN_SIZE/2)
-
 
 class Fond():
     def __init__(self,image):

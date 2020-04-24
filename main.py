@@ -1,28 +1,27 @@
 from time import sleep
 
-import pygame
-from pygame.locals import *  # les var de pygame
+from pygame.locals import *  # les var de cl.pygame
 
-import classes  # importation des classes
+import classes as cl  # importation des cl
 import variables as var  # importion des variables globales
 
 ##creation de la fenetre
-pygame.init()
-pygame.font.init()
-infoObject = pygame.display.Info()
+cl.pygame.init()
+cl.pygame.font.init()
+infoObject = cl.pygame.display.Info()
 if var.FULLSCREEN:
-    var.fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.FULLSCREEN)
+    var.fenetre = cl.pygame.display.set_mode((infoObject.current_w, infoObject.current_h),cl.pygame.FULLSCREEN)
     var.fullscreen = True
 else:
-    var.fenetre = pygame.display.set_mode((infoObject.current_w, infoObject.current_h),pygame.RESIZABLE)
+    var.fenetre = cl.pygame.display.set_mode((infoObject.current_w, infoObject.current_h),cl.pygame.RESIZABLE)
     var.fullscreen = False
 
 
 
 
 
-pygame.display.set_caption("AWACS")
-pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
+cl.pygame.display.set_caption("AWACS")
+cl.pygame.display.set_icon(cl.pygame.image.load(var.img_icon))#icone de la fenetre
 
 
 #musique de fond
@@ -30,39 +29,39 @@ pygame.display.set_icon(pygame.image.load(var.img_icon))#icone de la fenetre
 
 
 
-clock = pygame.time.Clock()
+clock = cl.pygame.time.Clock()
 clock.tick(60)
 
-classes.utility.screenReso(var.SCREEN_TYPE)
+cl.utility.screenReso(var.SCREEN_TYPE)
 while var.globalLoop:
     if var.menuLoop:
         var.refreshList = []
         var.playerList = []
         var.buttonList = []
         if var.SCREEN_TYPE==169:
-            menu = classes.Fond(var.img_menu169)
+            menu = cl.Fond(var.img_menu169)
         else:
-            menu = classes.Fond(var.img_menu43)
-        butGame = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-100),'var.menuLoop=False\nvar.gameLoop=True\n')
-        butOptions = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.menuLoop=False\nvar.optionsLoop = True')
-        butExit = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'var.menuLoop=False\nvar.globalLoop=False')
+            menu = cl.Fond(var.img_menu43)
+        butGame = cl.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-100),'var.menuLoop=False\nvar.gameLoop=True\n')
+        butOptions = cl.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.menuLoop=False\nvar.optionsLoop = True')
+        butExit = cl.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'var.menuLoop=False\nvar.globalLoop=False')
         
         if var.MUSIC and not(var.playlist == "menu_music"):
-            pygame.mixer.music.set_volume(var.volume/100)
+            cl.pygame.mixer.music.set_volume(var.volume/100)
             var.playlist = "menu_music"
-            pygame.mixer.init()
-            pygame.mixer.music.load(var.music_top_gun)
-            pygame.mixer.music.play(-1)
+            cl.pygame.mixer.init()
+            cl.pygame.mixer.music.load(var.music_top_gun)
+            cl.pygame.mixer.music.play(-1)
 
     while var.menuLoop:
 
-        for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
+        for event in cl.pygame.event.get():    #On parcours la liste de tous les événements reçus
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):#si on appuie sur la croix de la fenetre ou echap
                 var.menuLoop = False      #On arrête la boucle
                 var.globalLoop = False
             if event.type ==MOUSEBUTTONUP and event.button == 1:
                 for bouton in var.buttonList:
-                    bouton.checkclic(pygame.mouse.get_pos())
+                    bouton.checkclic(cl.pygame.mouse.get_pos())
             
         for objet in var.refreshList:
             objet.tick()
@@ -70,28 +69,28 @@ while var.globalLoop:
         for bouton in var.buttonList:
             if bouton.aff:
                 var.fenetre.blit(bouton.image,bouton.rect)
-        pygame.display.flip()
+        cl.pygame.display.flip()
 
     if var.optionsLoop:
         var.refreshList = []
         var.buttonList = []
         if var.SCREEN_TYPE==169:
-            options = classes.Fond(var.img_options169)
+            options = cl.Fond(var.img_options169)
         else:
-            options = classes.Fond(var.img_options43)
+            options = cl.Fond(var.img_options43)
         
-        cursVolume = classes.Cursor(var.img_cursor,var.img_cursor_c,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.volume = round((self.rect_c.left/self.rect.left-1)*54.4)\npygame.mixer.music.set_volume(var.volume/100)')
-        butReso = classes.ButtonReso(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-200),"Definition : ",'utility.resoSwitch()')
-        butMenu = classes.Button(var.img_highlbutt_s,(var.SCREEN_LENGHT/2-550,var.SCREEN_HEIGHT/2-420),'var.optionsLoop=False\nvar.menuLoop=True')
-        butFullscreen = classes.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'utility.fullscreenSwitch(var.fenetre)')
+        cursVolume = cl.Cursor(var.img_cursor,var.img_cursor_c,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+60),'var.volume = round((self.rect_c.left/self.rect.left-1)*54.4)\ncl.pygame.mixer.music.set_volume(var.volume/100)')
+        butReso = cl.ButtonReso(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2-200),"Definition : ",'utility.resoSwitch()')
+        butMenu = cl.Button(var.img_highlbutt_s,(var.SCREEN_LENGHT/2-550,var.SCREEN_HEIGHT/2-420),'var.optionsLoop=False\nvar.menuLoop=True')
+        butFullscreen = cl.Button(var.img_highlbutt,(var.SCREEN_LENGHT/2,var.SCREEN_HEIGHT/2+215),'utility.fullscreenSwitch(var.fenetre)')
     while var.optionsLoop:
-        for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
+        for event in cl.pygame.event.get():    #On parcours la liste de tous les événements reçus
             if event.type == QUIT:#si on appuie sur la croix de la fenetre 
                 var.optionsLoop = False      #On arrête la boucle
                 var.globalLoop = False
             if event.type ==MOUSEBUTTONUP and event.button == 1:
                 for bouton in var.buttonList:
-                    bouton.checkclic(pygame.mouse.get_pos())
+                    bouton.checkclic(cl.pygame.mouse.get_pos())
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 var.optionsLoop = False      #On arrête la boucle
                 var.menuLoop = True
@@ -103,37 +102,37 @@ while var.globalLoop:
 
             if bouton.aff:
                 var.fenetre.blit(bouton.image,bouton.rect)
-            if type(bouton) == classes.ButtonReso:
+            if type(bouton) == cl.ButtonReso:
                 var.fenetre.blit(bouton.textAff,(bouton.rect[0]-50,bouton.rect[1]+150))
-            if type(bouton) == classes.Cursor:
+            if type(bouton) == cl.Cursor:
                 var.fenetre.blit(bouton.image_c,bouton.rect_c)
-        pygame.display.flip()
+        cl.pygame.display.flip()
 
     ##debut des evenements gameloop
     if var.gameLoop:
         var.refreshList = []
         var.buttonList = []
         if var.SCREEN_TYPE==169:
-            overlay = classes.Fond(var.img_overlay169)
+            overlay = cl.Fond(var.img_overlay169)
         else:
-            overlay = classes.Fond(var.img_overlay43)
-        Player = classes.PlayerPlane(150,200,True)
-        fond = classes.Fond(var.img_fond)
-        fondNoir = classes.Fond(var.img_fondNoir)
+            overlay = cl.Fond(var.img_overlay43)
+        Player = cl.PlayerPlane(150,200,True)
+        fond = cl.Fond(var.img_fond)
+        fondNoir = cl.Fond(var.img_fondNoir)
         if var.MUSIC and not(var.playlist == "game_music"):
-                pygame.mixer.music.set_volume(var.volume/100)
+                cl.pygame.mixer.music.set_volume(var.volume/100)
                 var.playlist = "game_music"
-                pygame.mixer.stop()
-                pygame.mixer.music.load(var.music_hell_march)
-                pygame.mixer.music.load(var.music_face_the_enemy2)
-                pygame.mixer.music.load(var.music_face_the_enemy1)
-                pygame.mixer.music.load(var.music_bigfoot)
-                pygame.mixer.music.load(var.music_smash)
-                pygame.mixer.music.play(-1)
+                cl.pygame.mixer.stop()
+                cl.pygame.mixer.music.load(var.music_hell_march)
+                cl.pygame.mixer.music.load(var.music_face_the_enemy2)
+                cl.pygame.mixer.music.load(var.music_face_the_enemy1)
+                cl.pygame.mixer.music.load(var.music_bigfoot)
+                cl.pygame.mixer.music.load(var.music_smash)
+                cl.pygame.mixer.music.play(-1)
 
     while var.gameLoop:
 
-        for event in pygame.event.get():    #On parcours la liste de tous les événements reçus
+        for event in cl.pygame.event.get():    #On parcours la liste de tous les événements reçus
             if event.type == QUIT:#si on appuie sur la croix de la fenetre 
                 var.gameLoop = False      #On arrête la boucle
                 var.globalLoop = False
@@ -146,14 +145,14 @@ while var.globalLoop:
                     var.playerList[0].shoot()#le 1er player de playerlist tire si la liste est pas vide
                 except IndexError:pass
             if event.type == KEYDOWN and event.key == K_SPACE:#on crée un nouv player et on le met dans playerlist
-                classes.utility.respawn()
+                cl.utility.respawn()
             if event.type == KEYDOWN and event.key == K_k:#on crée un nouv player et on le met dans playerlist
                 try:var.playerList[0].delete()
                 except IndexError:pass
             if event.type == KEYDOWN and event.key == K_n:
-                classes.utility.spawnGroup(1000,1000,False,5)
+                cl.utility.spawnGroup(1000,1000,False,5)
             if event.type == KEYDOWN and event.key == K_b:
-                classes.utility.spawnGroup(100,100,True,5)
+                cl.utility.spawnGroup(100,100,True,5)
         
         
         for objet in var.refreshList:#boucle de mouvement
@@ -170,9 +169,9 @@ while var.globalLoop:
 
         for objet in var.refreshList:
             for objet2 in var.refreshList:#boucle de test hitbox
-                if pygame.sprite.collide_mask(objet,objet2) and objet != objet2:
+                if cl.pygame.sprite.collide_mask(objet,objet2) and objet != objet2:
                     #si 1 touche 2 et 1 différent de 2
-                    if not(type(objet)==classes.Missile and objet.creator == objet2 and objet.timeAlive < 5) and not(type(objet2)==classes.Missile and objet2.creator == objet and objet2.timeAlive < 5):
+                    if not(type(objet)==cl.Missile and objet.creator == objet2 and objet.timeAlive < 5) and not(type(objet2)==cl.Missile and objet2.creator == objet and objet2.timeAlive < 5):
                         #si 1 et 2 sont pas des missiles dans la phase d'invincibilité touchant leur créateur
                         var.hitList.append(objet) #on ajoute l'objet 1 à la hitList
         
@@ -196,16 +195,16 @@ while var.globalLoop:
         #calcul des icones à afficher
         try:
             for objet in var.refreshList: #test si un ennemi est hors de vue du joueur
-                if type(objet) != classes.Missile and objet.friendly != var.playerList[0].friendly:
+                if type(objet) != cl.Missile and objet.friendly != var.playerList[0].friendly:
                     newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
                     if newIconList:
-                        classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")#creation de l'icone
+                        cl.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"ennemy")#creation de l'icone
                 
                 #test si un ami est hors de vue du joueur
-                if type(objet) != classes.Missile and objet.friendly == var.playerList[0].friendly:
+                if type(objet) != cl.Missile and objet.friendly == var.playerList[0].friendly:
                     newIconList = list(filter(lambda x: x<-10 or x > var.SCREEN_SIZE+10, var.playerList[0].camera.apply(objet.rect)))
                     if newIconList:
-                        classes.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")#creation de l'icone
+                        cl.Icon(var.playerList[0].camera.apply((objet.x,objet.y)),"friend")#creation de l'icone
         except IndexError:pass
 
         #####fonds, avions,missiles
@@ -240,10 +239,10 @@ while var.globalLoop:
 
 
         for notif in var.refreshNotifList:#affichage des notifs
-            var.fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-480,var.SCREEN_HEIGHT/2-280))
+            var.fenetre.blit(notif.corps,(var.SCREEN_LENGHT/2-250,var.SCREEN_HEIGHT/2-350))
         
         
 
         #Rafraichissement
-        pygame.display.flip()
-pygame.quit()
+        cl.pygame.display.flip()
+cl.pygame.quit()

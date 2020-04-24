@@ -7,7 +7,7 @@ YCAM_MODIF = 110
 SCREEN_LENGHT = 0
 SCREEN_HEIGHT = 0
 MUSIC = False
-FULLSCREEN = False
+FULLSCREEN = True
 
 fenetre = None
 fullscreen = FULLSCREEN
