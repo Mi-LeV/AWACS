@@ -20,10 +20,11 @@ ROADMAP Florian :
                 -points sur les cotés de l'écran - Fait
 
     fullscreen,overlay - Fait mais peut etre trop petit - agrandi
-    faire un menu avec : jeu, options(169,43,volume,fullscreen), exit - Fait, options buggées
+    faire un menu avec : jeu, options(169,43,volume,fullscreen), exit - Fait
 
     compléter HUD : reloadtime, nb d'amis, nb d'ennemis
-    rework la traj du Player
+
+    faire un système de sauvegarde
 
     problème : missilelist ne désemplit pas - Resolu
                 IA esquive dans mauvais sens - Resolu
