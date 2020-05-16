@@ -538,5 +538,3 @@ class Cursor(Button):
             
             self.rect_c.center = (nextX,self.rect_c.center[1])
             exec(self.codeAExec)
-
-import r
