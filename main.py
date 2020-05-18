@@ -112,7 +112,7 @@ while var.globalLoop:##################### boucle globale, qui fait le lien entr
                 var.fenetre.blit(bouton.image_c,bouton.rect_c)
         cl.pygame.display.flip()
 
-    ########## debut de la boucle du jeu(là où on tire, piou piou): on reset les listes, on fait apparaitre les fonds
+    ##########   debut de la boucle du jeu (là où on tire, piou piou): on reset les listes, on fait apparaitre les fonds
     if var.gameLoop:
         var.refreshList = []
         var.buttonList = []
@@ -135,7 +135,7 @@ while var.globalLoop:##################### boucle globale, qui fait le lien entr
                 cl.pygame.mixer.music.load(var.music_smash)
                 cl.pygame.mixer.music.play(-1)
 
-    while var.gameLoop:################# boucle du jeu
+    while var.gameLoop:       ################# boucle du jeu
 
         for event in cl.pygame.event.get():    #On parcours la liste de tous les événements reçus
             if event.type == QUIT:#si on appuie sur la croix de la fenetre 
@@ -152,12 +152,19 @@ while var.globalLoop:##################### boucle globale, qui fait le lien entr
             if event.type == KEYDOWN and event.key == K_SPACE:#on crée un nouv player et on le met dans playerlist
                 cl.utility.respawn()
             if event.type == KEYDOWN and event.key == K_k:#on delete le player si il existe
+                cl.utility.save_objList(var.refreshList)
                 try:var.playerList[0].delete()
                 except IndexError:pass
             if event.type == KEYDOWN and event.key == K_n:#on fait spawn un groupe de 5 ennemi en 1000,1000
                 cl.utility.spawnGroup(1000,1000,False,5)
             if event.type == KEYDOWN and event.key == K_b:#on fait spawn un groupe de 5 allié en 100,100
                 cl.utility.spawnGroup(100,100,True,5)
+            if event.type == KEYDOWN and event.key == K_s:
+                cl.utility.save_objList(var.refreshList)
+            if event.type == KEYDOWN and event.key == K_l:
+                for obj in var.refreshList[::-1]:
+                    obj.delete()
+                cl.utility.load_list('save')
         
         
         for objet in var.refreshList:#pour chaque objet physique(avion, missile)

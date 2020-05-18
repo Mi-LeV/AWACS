@@ -1,8 +1,7 @@
 import math
 from random import randrange
-
+import json
 import pygame
-
 import variables as var
 
 
@@ -92,12 +91,50 @@ class utility:
         else:
             fenetre = pygame.display.set_mode((var.SCREEN_LENGHT, var.SCREEN_HEIGHT),pygame.FULLSCREEN)
             var.fullscreen = True
+    
+    @staticmethod
+
+    def get_obj_attrib(obj):
+        if isinstance(obj,Plane) or isinstance(obj,Missile):
+            return {
+                'type':obj.__class__.__name__,
+                'friendly':str(obj.friendly),
+                'x':obj.x,
+                'y':obj.y,
+                'angle':obj.angle,
+                'timeAlive':obj.timeAlive
+            }
+    @staticmethod
+
+    def save_objList(objList):
+        outfile = open('save','w')
+        for obj in objList:
+            outfile.write(str(utility.get_obj_attrib(obj)) + '\n')
+        outfile.close()
+    
+    @staticmethod
+    def load_list(fileName):
+        infile = open(fileName,'r')
+        line = infile.readline()
+        while not(line == ''):
+            line = line.replace("\'", "\"")
+            line = line.replace("\n", "")
+            obj = json.loads(line)
+            if obj['type']=='IaPlane':
+                IaPlane(obj['x'],obj['y'],obj['friendly']=='True',obj['angle'],obj['timeAlive'])
+            elif obj['type']=='PlayerPlane':
+                PlayerPlane(obj['x'],obj['y'],obj['friendly']=='True',obj['timeAlive'])
+            else:
+                Missile(obj['x'],obj['y'],obj['angle'],obj['timeAlive'])
+            line = infile.readline()
+            
+
 
 class Plane(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self,x,y,angle = 90,timeAlive = 0):
         pygame.sprite.Sprite.__init__(self) #call Sprite initializer
         self.MAXSPEED = 3
-        self.timeAlive = 0
+        self.timeAlive = timeAlive
         self.xVector=0
         self.yVector=0
         self.xDest = x
@@ -108,7 +145,7 @@ class Plane(pygame.sprite.Sprite):
         self.image = pygame.image.load(var.img_plane_default).convert_alpha()
         self.rect = self.image.get_rect(center=(x,y))
         self.mask = pygame.mask.from_surface(self.image)
-        self.angle = 90
+        self.angle = angle
         self.missileList = []
         var.refreshList.append(self)
 
@@ -172,7 +209,7 @@ class Plane(pygame.sprite.Sprite):
             return True
 
     def shoot(self):
-        self.missileList.append(Missile(self))
+        self.missileList.append(Missile(0,0,0,0,self))
     
     def turn(self):
         self.angle = (utility.getBearing((self.x,self.y),(self.xDest,self.yDest))+90)%360
@@ -180,8 +217,8 @@ class Plane(pygame.sprite.Sprite):
         utility.rotate(self,self.angle)# on le tourne de cet angle
 
 class PlayerPlane(Plane):
-    def __init__(self,x,y,friend):
-        super().__init__(x,y)
+    def __init__(self,x,y,friend,angle = 90,timeAlive = 0):
+        super().__init__(x,y,angle,timeAlive)
         self.MAXMISSILE = 3
         var.playerList.append(self)
         if friend:
@@ -248,8 +285,8 @@ class PlayerPlane(Plane):
         utility.rotate(self,self.angle)# on le tourne de cet angle
 
 class IaPlane(Plane):
-    def __init__(self,x,y,friend,active = True):
-        super().__init__(x,y)
+    def __init__(self,x,y,friend,active = True,angle = 90,timeAlive = 0):
+        super().__init__(x,y,angle,timeAlive)
         self.MAXSPEED = 1.5
         self.RELOADTIME = 30
         self.MAXMISSILE = 3
@@ -332,14 +369,24 @@ class IaPlane(Plane):
             return False
 
 class Missile():
-    def __init__(self,creator):
+    def __init__(self,x, y , angle ,timeAlive,creator = None):
 
         self.creator = creator
-        angle = self.creator.angle
-        xVector = self.creator.xVector
-        yVector = self.creator.yVector
-        x = self.creator.x
-        y = self.creator.y
+        if self.creator: #si il a un créateur
+            angle = self.creator.angle
+            xVector = self.creator.xVector
+            yVector = self.creator.yVector
+            x = self.creator.x
+            y = self.creator.y
+            timeAlive = 0
+        else:#si il est créé artificiellement (lors d'un load)
+            angle = angle
+            xVector = 0
+            yVector = 0
+            x = x
+            y = y
+            timeAlive = timeAlive
+        self.friendly = None
 
         xAngle,yAngle = utility.getCoords(angle)
         self.xVector=utility.plafonne(xVector*2 + xAngle*30,40,True)
@@ -349,7 +396,7 @@ class Missile():
         self.x = x
         self.y = y
         self.speed = 0
-        self.timeAlive = 0
+        self.timeAlive = timeAlive
 
         pygame.sprite.Sprite.__init__(self)
         self.orig_image = pygame.image.load(var.img_sprite_missile).convert_alpha()
@@ -384,8 +431,9 @@ class Missile():
         utility.rotate(self,self.angle)# on le tourne de cet angle
     
     def delete(self):
-        if self in self.creator.missileList:
-            self.creator.missileList.remove(self)
+        if self.creator:
+            if self in self.creator.missileList:
+                self.creator.missileList.remove(self)
         self.image.fill((0,0,0,0))
         if self in var.hitList:
             var.hitList.remove(self)
