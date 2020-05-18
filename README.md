@@ -10,5 +10,8 @@ __Rappel des commandes__:
 * K : Suicide
 * Espace : Respawn en 250,230
 * N : Spawn groupe d'ennemis en 1000,1000
+*Nouveau*
+* S : Sauvegarde de la partie, tous les objets physiques sont stockés en Json dans le fichier save (ce qui écrase la précédente sauvegarde)
+* L : Load, chargement de la sauvegarde stockée dans save
 
 *Les musiques sont toutes issues de Command and Conquer - Alerte Rouge et de la BO de Top Gun, j'ai aucun droit dessus.*
